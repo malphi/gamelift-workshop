@@ -1,0 +1,66 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "WorkshopServices",
+      "Effect": "Allow",
+      "Action": [
+        "gamelift:*",
+        "cloudformation:*",
+        "s3:*",
+        "lambda:*",
+        "apigateway:*",
+        "dynamodb:*",
+        "sns:*",
+        "cloudfront:*",
+        "logs:*",
+        "cloudwatch:*",
+        "ec2:Describe*",
+        "ec2:GetConsole*",
+        "ssm:StartSession",
+        "ssm:TerminateSession",
+        "ssm:ResumeSession",
+        "ssm:DescribeSessions",
+        "ssm:GetConnectionStatus",
+        "ecr:*",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CdkBootstrapRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:TagRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/cdk-*",
+        "arn:aws:iam::*:role/PixelRush*"
+      ]
+    },
+    {
+      "Sid": "CdkDeployViaBootstrapRoles",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::*:role/cdk-*"
+    },
+    {
+      "Sid": "IamRead",
+      "Effect": "Allow",
+      "Action": [
+        "iam:List*",
+        "iam:Get*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

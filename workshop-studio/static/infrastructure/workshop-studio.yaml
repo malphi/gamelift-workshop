@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  GameLift Workshop - Workshop Studio pre-provisioning. Creates a cloud
+  development machine (code-server / VS Code in the browser) with all tools
+  installed and the workshop repository pre-cloned. The instance doubles as
+  the participant's GameLift Anywhere compute in Module 3, so its security
+  group opens the game port.
+
+Parameters:
+  RepoUrl:
+    Type: String
+    Default: https://github.com/YOUR-ORG/gamelift-workshop.git
+    Description: Workshop repository to pre-clone
+  InstanceType:
+    Type: String
+    Default: t3.large
+    Description: Dev machine instance type (2 vCPU / 8 GB is comfortable for CDK + Go builds)
+  CodeServerPassword:
+    Type: String
+    Default: gamelift-workshop
+    Description: Password for the browser IDE (shown to the participant in Event Outputs)
+    NoEcho: false
+
+Resources:
+
+  # ---------- network ----------
+  WorkshopVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.42.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags: [{ Key: Name, Value: gamelift-workshop-vpc }]
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref WorkshopVpc
+      CidrBlock: 10.42.0.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [0, !GetAZs '']
+
+  Igw:
+    Type: AWS::EC2::InternetGateway
+  IgwAttach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref WorkshopVpc
+      InternetGatewayId: !Ref Igw
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref WorkshopVpc
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: IgwAttach
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref Igw
+  SubnetRoute:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref RouteTable
+
+  # ---------- security ----------
+  DevSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: >-
+        code-server access + game ports (this instance acts as the GameLift
+        Anywhere compute in Module 3; participants' browsers connect to the
+        game server running on it).
+      VpcId: !Ref WorkshopVpc
+      SecurityGroupIngress:
+        - { IpProtocol: tcp, FromPort: 8080, ToPort: 8080, CidrIp: 0.0.0.0/0, Description: code-server (HTTPS terminated by caddy) }
+        - { IpProtocol: tcp, FromPort: 443,  ToPort: 443,  CidrIp: 0.0.0.0/0, Description: caddy TLS for code-server }
+        - { IpProtocol: tcp, FromPort: 1935, ToPort: 1935, CidrIp: 0.0.0.0/0, Description: Anywhere game server (Module 3) }
+        - { IpProtocol: udp, FromPort: 1935, ToPort: 1935, CidrIp: 0.0.0.0/0, Description: Anywhere game server WebRTC/UDP }
+
+  # ---------- IAM ----------
+  DevInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: { Service: ec2.amazonaws.com }
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        # Workshop-scoped simplification: participants deploy CDK stacks that
+        # create IAM roles, GameLift fleets, CloudFront distributions etc.
+        # A production template would scope this down with permission boundaries.
+        - arn:aws:iam::aws:policy/AdministratorAccess
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+  DevInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles: [!Ref DevInstanceRole]
+
+  # ---------- dev machine ----------
+  DevInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: '{{resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64}}'
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds: [!Ref DevSecurityGroup]
+      IamInstanceProfile: !Ref DevInstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs: { VolumeSize: 30, VolumeType: gp3 }
+      Tags: [{ Key: Name, Value: gamelift-workshop-dev }]
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -euxo pipefail
+          exec > /var/log/workshop-init.log 2>&1
+
+          dnf install -y git golang docker
+          systemctl enable --now docker
+
+          # Node 20
+          curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
+          dnf install -y nodejs
+
+          # CDK
+          npm install -g aws-cdk
+
+          # code-server (VS Code in the browser)
+          curl -fsSL https://code-server.dev/install.sh | sh
+          useradd -m workshop || true
+          usermod -aG docker workshop
+          mkdir -p /home/workshop/.config/code-server
+          cat > /home/workshop/.config/code-server/config.yaml << CFG
+          bind-addr: 0.0.0.0:8080
+          auth: password
+          password: ${CodeServerPassword}
+          cert: false
+          CFG
+          chown -R workshop:workshop /home/workshop/.config
+
+          # pre-clone the workshop repo + install dependencies
+          sudo -u workshop bash -c '
+            cd /home/workshop
+            git clone ${RepoUrl} gamelift-workshop || true
+            cd gamelift-workshop
+            (cd infra && npm install) || true
+            (cd backend && npm install) || true
+            (cd frontend && npm install) || true
+          '
+
+          # the Anywhere script needs the instance public IP for RegisterCompute
+          TOKEN=$(curl -sX PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 300')
+          PUB_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+          echo "export COMPUTE_IP=$PUB_IP" >> /home/workshop/.bashrc
+          echo "export AWS_REGION=${AWS::Region}" >> /home/workshop/.bashrc
+
+          # run code-server as the workshop user
+          cat > /etc/systemd/system/code-server.service << SVC
+          [Unit]
+          Description=code-server
+          After=network.target
+          [Service]
+          User=workshop
+          ExecStart=/usr/bin/code-server --config /home/workshop/.config/code-server/config.yaml /home/workshop/gamelift-workshop
+          Restart=always
+          [Install]
+          WantedBy=multi-user.target
+          SVC
+          systemctl enable --now code-server
+
+Outputs:
+  CodeServerURL:
+    Description: Open this in your browser (accept the self-signed warning if any)
+    Value: !Sub http://${DevInstance.PublicIp}:8080
+  CodeServerPassword:
+    Description: Password for the browser IDE
+    Value: !Ref CodeServerPassword
+  InstancePublicIp:
+    Description: Used automatically by run-anywhere.sh (COMPUTE_IP) in Module 3
+    Value: !GetAtt DevInstance.PublicIp
