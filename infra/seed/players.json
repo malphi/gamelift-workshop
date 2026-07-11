@@ -1,0 +1,10 @@
+[
+  { "templateId": "1", "level": 1, "coins": 300, "titles": ["Rookie"], "ownedCars": ["corolla"], "selectedCar": "corolla", "completedTracks": [] },
+  { "templateId": "2", "level": 2, "coins": 500, "titles": ["Sunday Driver"], "ownedCars": ["beetle"], "selectedCar": "beetle", "completedTracks": [] },
+  { "templateId": "3", "level": 3, "coins": 800, "titles": ["Gearhead"], "ownedCars": ["corolla"], "selectedCar": "corolla", "completedTracks": [] },
+  { "templateId": "4", "level": 4, "coins": 1200, "titles": ["Speed Demon"], "ownedCars": ["bmw-m3"], "selectedCar": "bmw-m3", "completedTracks": [] },
+  { "templateId": "5", "level": 5, "coins": 1600, "titles": ["Drift Prodigy"], "ownedCars": ["merc-sl"], "selectedCar": "merc-sl", "completedTracks": [] },
+  { "templateId": "6", "level": 6, "coins": 2200, "titles": ["Night Racer"], "ownedCars": ["porsche"], "selectedCar": "porsche", "completedTracks": [] },
+  { "templateId": "7", "level": 7, "coins": 3200, "titles": ["Circuit Ace"], "ownedCars": ["ferrari"], "selectedCar": "ferrari", "completedTracks": [] },
+  { "templateId": "8", "level": 8, "coins": 4500, "titles": ["Street King"], "ownedCars": ["lambo"], "selectedCar": "lambo", "completedTracks": [] }
+]

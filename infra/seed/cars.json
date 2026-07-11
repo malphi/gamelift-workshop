@@ -1,0 +1,10 @@
+[
+  { "carId": "corolla", "name": "Toyota Corolla", "price": 220, "speedBonus": 1.0, "handling": 3, "spriteKey": "corolla", "description": "The world's best-selling car. Reliable, honest, slow-ish." },
+  { "carId": "beetle", "name": "VW Beetle", "price": 250, "speedBonus": 0.98, "handling": 3, "spriteKey": "beetle", "description": "The classic Bug. Charm over speed." },
+  { "carId": "bmw-m3", "name": "BMW M3 (E30)", "price": 750, "speedBonus": 1.04, "handling": 4, "spriteKey": "bmw-m3", "description": "The original sports sedan legend." },
+  { "carId": "merc-sl", "name": "Mercedes 300 SL", "price": 1100, "speedBonus": 1.05, "handling": 4, "spriteKey": "merc-sl", "description": "Gullwing doors. Timeless class." },
+  { "carId": "porsche", "name": "Porsche 911", "price": 1150, "speedBonus": 1.08, "handling": 5, "spriteKey": "porsche", "description": "Six decades of rear-engine perfection." },
+  { "carId": "ferrari", "name": "Ferrari 488", "price": 3000, "speedBonus": 1.11, "handling": 5, "spriteKey": "ferrari", "description": "Maranello's prancing horse at full gallop." },
+  { "carId": "lambo", "name": "Lamborghini Aventador", "price": 4200, "speedBonus": 1.13, "handling": 4, "spriteKey": "lambo", "description": "A raging bull with scissor doors." },
+  { "carId": "veyron", "name": "Bugatti Veyron", "price": 17000, "speedBonus": 1.15, "handling": 4, "spriteKey": "veyron", "description": "1001 hp. The king. Save up." }
+]
