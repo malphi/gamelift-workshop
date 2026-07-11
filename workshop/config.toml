@@ -1,8 +1,8 @@
 baseURL = "/"
-languageCode = "en-US"
+locale = "en-US"
 defaultContentLanguage = "en"
 title = "Hands-on Amazon GameLift: Deploy Your First Multiplayer Game"
-theme = "hugo-theme-learn"
+theme = "hugo-theme-relearn"
 metaDataFormat = "yaml"
 defaultContentLanguageInSubdir = "false"
 uglyurls = "true"
@@ -20,18 +20,17 @@ enableEmoji = true
   disableBreadcrumb = false
   disableNextPrev = false
   ordersectionsby = "weight"
-  themeVariant = "workshop"
 
 [Languages]
   [Languages.en]
     title = "Hands-on Amazon GameLift: Deploy Your First Multiplayer Game"
     weight = 1
-    languageName = "English"
+    label = "English"
 
   [Languages.zh]
     title = "Amazon GameLift 实战：部署你的第一个多人在线游戏"
     weight = 2
-    languageName = "简体中文"
+    label = "简体中文"
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]

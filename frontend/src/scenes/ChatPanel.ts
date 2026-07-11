@@ -36,7 +36,7 @@ export class ChatPanel {
 
     scene.add.rectangle(x + PANEL_W / 2, (top + bottom) / 2, PANEL_W - 12, bottom - top, 0x0d0d17, 0.92)
       .setDepth(200);
-    scene.add.text(x + PANEL_W / 2, top + 14, '🌍 世界频道', {
+    scene.add.text(x + PANEL_W / 2, top + 14, '🌍 WORLD CHAT', {
       fontFamily: FONT, fontSize: '14px', color: '#ffd60a',
     }).setOrigin(0.5).setDepth(201);
     // separator under the panel title

@@ -18,7 +18,7 @@ const {
   gapMin = 260, gapMax = 480,        // distance between obstacle rows
   maxPerRow = 2,                     // obstacles per row (must be < lanes)
   movingRatio = 0.3,                 // fraction of obstacles that are slow traffic
-  itemEvery = 700,                   // item pickup spacing
+  itemEvery = 1200,                  // item pickup spacing
   seed = 1,
 } = spec;
 

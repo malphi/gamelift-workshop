@@ -19,6 +19,8 @@ endpoint, verifies it's a Pixel Rush arena, and wires the whole client
 This is the graduation exercise — the full pipeline **you** built, verified in
 one flow:
 
+![Login screen with MY SERVER selected and your ApiUrl pasted](/images/gl-ws-myserver.png)
+
 1. Open the **official workshop site** (URL provided by your instructor —
    *not* your own SiteUrl this time)
 2. On the login screen click **🔧 MY SERVER**

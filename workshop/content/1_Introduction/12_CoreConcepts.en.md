@@ -8,24 +8,12 @@ weight: 12
 Everything you deploy today fits on one diagram. Keep it handy — each module of
 this workshop lights up one box.
 
-```
-                 ┌───────────────────────────── Amazon GameLift ─────────────────────────────┐
-                 │                                                                            │
-  your binary ──►│  BUILD ──► FLEET (managed EC2) ──┐                                         │
-                 │            · instances           │                                         │
-                 │            · server processes    ├──► GAME SESSION ◄── players connect     │
-                 │            · ports / TLS         │    (one race)        directly (ws)      │
-  your laptop ──►│  FLEET (Anywhere)  ──────────────┘         ▲                               │
-                 │                                            │ placement                     │
-                 │  QUEUE ─────────────────────────────────────                               │
-                 │    ▲                                                                       │
-                 │    │ "start a session for these players"                                   │
-                 │  FLEXMATCH (matchmaking configuration + rule set)                          │
-                 │    ▲                                             │ events                  │
-                 └────┼─────────────────────────────────────────────┼─────────────────────────┘
-                      │ StartMatchmaking                            ▼
-                   your backend (Lambda)                     SNS ──► your Lambda ──► player
-```
+![Amazon GameLift component map](/images/gamelift-arch.png)
+
+*(Diagram labels: BUILD ← your binary · FLEET managed-EC2 / Anywhere ← your
+laptop · GAME SESSION ← players connect directly · QUEUE places sessions ·
+FLEXMATCH = matchmaking configuration + rule set · events flow via SNS to your
+Lambda and back to players)*
 
 | Component | One-liner | You'll touch it in |
 |---|---|---|

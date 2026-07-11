@@ -3,9 +3,6 @@ title: "2. Setup"
 chapter: true
 weight: 20
 ---
-
-# Setup
-
 *Duration: ~20 minutes*
 
 Two paths — pick the one that matches how you're attending:

@@ -3,9 +3,6 @@ title: "5. FlexMatch"
 chapter: true
 weight: 50
 ---
-
-# FlexMatch
-
 *Duration: ~20 minutes*
 
 The last missing piece: how players find each other. Rule sets, tickets, and

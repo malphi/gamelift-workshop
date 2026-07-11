@@ -20,13 +20,13 @@ const (
 	crashSlowdown = 0.35 // speed multiplier after hitting an obstacle
 	crashRecovery = 1.8  // seconds to recover to full speed
 	// Items: nitro (long speed boost) or bomb (drop behind, stuns a chaser).
-	nitroDuration = 10.0
+	nitroDuration = 3.0
 	nitroFactor   = 1.4
 	stunDuration  = 1.2
 	bombArmDelay  = 0.4
 	bombLifetime  = 8.0
 	// item boxes respawn a few seconds after being taken
-	itemRespawnTicks = 8 * TickRate
+	itemRespawnTicks = 15 * TickRate
 )
 
 // CarSpec: per-car performance. SpeedBonus scales the shared track speed a

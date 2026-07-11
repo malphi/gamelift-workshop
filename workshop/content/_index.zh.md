@@ -2,9 +2,9 @@
 title: "Amazon GameLift 实战"
 chapter: true
 weight: 1
+
 ---
 
-# Amazon GameLift 实战
 ### 部署你的第一个多人在线游戏
 
 <br>
@@ -19,16 +19,35 @@ weight: 1
 - **托管 EC2 fleet**——生产级托管：build、运行时配置、会话队列
 - **FlexMatch**——基于规则的匹配、票据与事件通知
 
+![Pixel Rush 游戏画面](/images/all.png)
 最后，你会和其他学员在共享竞技场同场对战——而匹配、会话放置、实时状态同步的
 每一环，都跑在**你亲手部署**的基础设施上。
 
 ```
-浏览器 (Phaser 3 网页客户端)
- ├── REST ──► API Gateway + Lambda + DynamoDB     登录 / 车库 / 排行榜
- ├── WebSocket ──► API Gateway WebSocket API      匹配结果通知
- └── WebSocket ──► GameLift 上的 Go 游戏服务器     实时对战 @ 20Hz
+                    ┌─────────────────┐
+                    │  API Gateway +  │
+          ┌─ REST ──►    Lambda +     │   Login / Garage /
+          │         │    DynamoDB     │   Leaderboard
+          │         └─────────────────┘
+          │
+          │         ┌─────────────────┐
+┌─────────┴───┐     │  API Gateway    │
+│  Browser    │     │  WebSocket API  │   Match Result
+│ (Phaser 3)  ├─ WS ┼─────────────────┤   Notifications
+│             │     │      │Lambda    │
+│Web Client   │     └──────┼──────────┘
+│             │            ▲
+└─────────┬───┘            │
+          │         ┌──────┼──────────┐
+          │         │      │          │
+          └─ WS ────► GameLift Go Server  Real-time Combat
+                    │                 │   @ 20Hz
+                    └─────────────────┘
 
-FlexMatch ──► SNS ──► Lambda ──► 推送给等待中的玩家
+
+┌────────────┐      ┌───────┐      ┌──────────┐
+│ FlexMatch  │ ───► │  SNS  │ ───► │  Lambda  │ ───► Push to waiting players
+└────────────┘      └───────┘      └──────────┘
 ```
 
 {{% notice info %}}
@@ -39,17 +58,17 @@ FlexMatch ──► SNS ──► Lambda ──► 推送给等待中的玩家
 
 ## 日程
 
-| 模块 | 时长 |
-|---|---|
-| 1. 引言——为什么需要游戏服务器、GameLift 概念 | 10 分钟 |
-| 2. 环境准备——部署游戏后端 | 20 分钟 |
+| 模块                                 | 时长    |
+| ---------------------------------- | ----- |
+| 1. 引言——为什么需要游戏服务器、GameLift 概念      | 10 分钟 |
+| 2. 环境准备——部署游戏后端                    | 20 分钟 |
 | 3. GameLift Anywhere——你的机器变成 fleet | 25 分钟 |
-| 4. 托管 Fleet——EC2 上的生产托管 | 25 分钟 |
-| 5. FlexMatch——基于规则的匹配 | 20 分钟 |
-| 6. 决赛日——验证自己的服务器，然后全员对战 | 15 分钟 |
-| 7. 资源清理 | 5 分钟 |
-| 8. 总结与进阶 | 5 分钟 |
-| 附录：多区域 fleet（可选挑战） | 20 分钟 |
+| 4. 托管 Fleet——EC2 上的生产托管            | 25 分钟 |
+| 5. FlexMatch——基于规则的匹配              | 20 分钟 |
+| 6. 决赛日——验证自己的服务器，然后全员对战            | 15 分钟 |
+| 7. 资源清理                            | 5 分钟  |
+| 8. 总结与进阶                           | 5 分钟  |
+| 附录：多区域 fleet（可选挑战）                 | 20 分钟 |
 
 {{% notice warning %}}
 本 workshop 的示例代码是教学内容，并非生产级软件。它演示 GameLift 集成模式，

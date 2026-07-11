@@ -21,15 +21,16 @@ workshop/
 ## 本地预览
 
 ```bash
-# 1. 取 base 模板作为站点骨架（一次性）
-git clone https://github.com/aws-samples/aws-modernization-workshop-base /tmp/ws-base
-cd /tmp/ws-base && git submodule update --init   # 拉取 hugo-theme-learn 主题
+# 1. 准备站点骨架（一次性）
+mkdir -p /tmp/ws-base/themes && cd /tmp/ws-base
+# 注意：base 模板自带的 hugo-theme-learn 已停止维护，与 Hugo ≥0.146 不兼容；
+# 本 workshop 的 config.toml 已改用其维护中的兼容分支 relearn：
+git clone --depth 1 https://github.com/McShelby/hugo-theme-relearn themes/hugo-theme-relearn
 
 # 2. 用本目录内容覆盖
-rm -rf content config.toml
 cp -r /path/to/gamelift-workshop/workshop/content .
 cp    /path/to/gamelift-workshop/workshop/config.toml .
-cp -r /path/to/gamelift-workshop/workshop/static/* static/
+mkdir -p static && cp -r /path/to/gamelift-workshop/workshop/static/* static/
 
 # 3. 启动
 hugo server -D    # http://localhost:1313，右上角可切换 English/简体中文

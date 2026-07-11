@@ -56,7 +56,7 @@ class WorldChat {
     if (!url) return;
     this.sock = new WebSocket(`${url}?playerId=${encodeURIComponent(playerId)}`);
     this.sock.onopen = () => {
-      // announce "<name> 进入了游戏" only once per login, not per reconnect
+      // announce "<name> joined the game" only once per login, not per reconnect
       if (!this.helloSent) {
         this.helloSent = true;
         this.sock!.send(JSON.stringify({ type: 'hello', playerId }));
