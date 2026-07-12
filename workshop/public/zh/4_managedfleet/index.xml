@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>4. 托管 Fleet :: Amazon GameLift 实战：部署你的第一个多人在线游戏</title>
+    <link>/zh/4_managedfleet/index.html</link>
+    <description>时长：约 25 分钟（含约 15 分钟 fleet 激活等待——用于阅读）&#xA;进入生产托管：上传你的服务器 build，让 GameLift 在托管 EC2 实例上运行它。</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <atom:link href="/zh/4_managedfleet/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>动手：构建与部署</title>
+      <link>/zh/4_managedfleet/41_buildanddeploy.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/4_managedfleet/41_buildanddeploy.html</guid>
+      <description>1. 为 fleet 交叉编译服务器 Fleet 实例运行 x86_64 的 Amazon Linux 2023。Go 一条命令即可交叉编译：&#xA;./scripts/build-server-linux.sh 脚本产出 server/dist/linux/，包含：&#xA;pixelrush-server — Linux 二进制（静态链接，约 8 MB） install.sh — 部署时在每台实例上执行一次（设置权限、日志目录） 2. 部署 fleet cd infra npx cdk deploy PixelRushGameLiftStack -c stage=ec2 --require-approval never -c stage=ec2 标志在你已有的 stack 上扩展三个资源：&#xA;资源 发生了什么 Build server/dist/linux/ 打包上传 S3，注册到 GameLift Fleet GameLift 开出一台 c5.large，下载 build，执行 install.sh，拉起你的服务器进程 Queue PixelRushQueue — FlexMatch 将使用的放置目标 信息 这一步需要 约 15 分钟（实例开通 + build 安装 + 进程健康检查）。别干等—— 翻到下一页阅读 fleet 的配置详解，等部署命令返回后再回来。</description>
+    </item>
+    <item>
+      <title>Fleet 配置详解（等待时阅读）</title>
+      <link>/zh/4_managedfleet/42_fleetanatomy.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/4_managedfleet/42_fleetanatomy.html</guid>
+      <description>趁 fleet 激活的时间，读一读正在生效的配置。打开 infra/lib/gamelift-stack.ts，找到 Ec2Fleet 的定义。&#xA;运行时配置——每台实例上跑什么 runtimeConfiguration: { serverProcesses: [ { launchPath: &#39;/local/game/pixelrush-server&#39;, parameters: &#39;--port 8443 ...&#39;, concurrentExecutions: 1 }, { launchPath: &#39;/local/game/pixelrush-server&#39;, parameters: &#39;--port 2083 ...&#39;, concurrentExecutions: 1 }, ], }, 每台实例在不同端口运行两个服务器进程 → 每实例可同时承载两局比赛。 进程密度是成本杠杆：大型工作室每台机器跑几十个进程。launchPath 一律以 /local/game/ 开头——那是 GameLift 解压你 build 的位置。&#xA;端口——玩家怎么进来 ec2InboundPermissions: [ { fromPort: 8443, toPort: 8443, ipRange: &#39;0.0.0.0/0&#39;, protocol: &#39;TCP&#39; }, { fromPort: 2083, toPort: 2083, ipRange: &#39;0.0.0.0/0&#39;, protocol: &#39;TCP&#39; }, // + 同样两个端口的 UDP ], 游戏客户端直连实例（这是 GameLift 低延迟设计的核心）——所以游戏端口必须 显式开放。只有列出的端口可达，其余全部关闭。</description>
+    </item>
+    <item>
+      <title>验证 Fleet</title>
+      <link>/zh/4_managedfleet/43_verify.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/4_managedfleet/43_verify.html</guid>
+      <description>读 fleet 自己讲述的故事 控制台 → Amazon GameLift Servers → Fleets → PixelRushFleet → Events 页签。 整个激活过程可以像时间线一样回放：&#xA;FLEET_CREATED FLEET_STATE_DOWNLOADING ← 从 S3 拉取你的 build FLEET_CREATION_RUNNING_INSTALLER ← 执行了 install.sh FLEET_STATE_VALIDATING FLEET_CREATION_VALIDATING_RUNTIME_CONFIG FLEET_STATE_BUILDING FLEET_STATE_ACTIVATING ← 进程已拉起，健康检查通过 FLEET_STATE_ACTIVE ← 可以接客了 提示 以后 fleet 一旦异常，Events 页签永远是第一站——服务器二进制崩溃会以 SERVER_PROCESS_CRASHED 或 SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT 的形式出现，每条事件都带解释。&#xA;逛逛其他页签 Compute：一台 c5.large 实例、公网 IP 和所在位置 Metrics：可用/活跃会话数、健康进程数——自动伸缩策略依据的就是这些指标 Game sessions：现在是空的。匹配系统还指向你的 Anywhere fleet—— 切换过来正是下一模块的事。 检查点 ★ Fleet 状态为 ACTIVE，Compute 页签有一台活跃实例。</description>
+    </item>
+  </channel>
+</rss>

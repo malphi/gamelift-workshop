@@ -8,7 +8,7 @@ weight: 23
 *(AWS event path: already cloned at `~/gamelift-workshop` — just `cd` into it.)*
 
 ```bash
-git clone https://github.com/YOUR-ORG/gamelift-workshop.git
+git clone https://github.com/malphi/gamelift-workshop.git
 cd gamelift-workshop
 ```
 

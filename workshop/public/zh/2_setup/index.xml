@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2. 环境准备 :: Amazon GameLift 实战：部署你的第一个多人在线游戏</title>
+    <link>/zh/2_setup/index.html</link>
+    <description>时长：约 20 分钟&#xA;两条路径——按你的参与方式选择：&#xA;AWS 主办活动 → 提供临时账号和浏览器 IDE（2.1） 自己的账号 → 在本机安装少量工具（2.2） 之后所有人统一：克隆仓库、初始化 CDK、部署游戏后端。</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <atom:link href="/zh/2_setup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>路径 A：AWS 主办活动</title>
+      <link>/zh/2_setup/21_awsevent.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/2_setup/21_awsevent.html</guid>
+      <description>信息 仅当你在 AWS 主办活动现场、持有 Workshop Studio 接入码时走本页。 否则请跳到路径 B：自己的账号。&#xA;1. 加入活动 打开 Workshop Studio，输入讲师提供的 接入码（access code）。 接受条款，点击 Join event。你获得一个临时 AWS 账号——今天的所有操作 都不产生个人费用。 2. 打开开发环境 活动账号预置了一台云上开发机（浏览器里的 VS Code），所有工具已装好：&#xA;在活动页面找到 Event Outputs 区域。 打开 CodeServerURL 链接，输入 CodeServerPassword。 浏览器中的 VS Code 已把 workshop 仓库克隆在 ~/gamelift-workshop。 在其中打开终端（菜单 → Terminal → New Terminal）并验证：</description>
+    </item>
+    <item>
+      <title>路径 B：自己的账号</title>
+      <link>/zh/2_setup/22_ownaccount.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/2_setup/22_ownaccount.html</guid>
+      <description>警告 费用估算：今天部署的资源在运行期间约 $0.20/小时（一台 c5.large GameLift 实例 + Serverless 组件）。清理模块会删除全部资源；完整跑完 2 小时通常花费不到 $1。&#xA;1. AWS 账号与凭证 需要一个具备管理员级权限的账号（CDK 要创建 IAM 角色、GameLift fleet、 CloudFront 分发）。在本机配置凭证：&#xA;aws configure # 或 aws sso login / 环境变量 aws sts get-caller-identity # 验证——应输出你的账号 ID 选择一个支持 GameLift 的区域；本 workshop 以 us-east-1 为准。&#xA;2. 安装工具 工具 版本 验证 Node.js 20+ node --version Go 1.22+ go version AWS CLI v2 aws --version AWS CDK v2 npx cdk --version（无需安装——npx 自动获取） macOS 一条命令（Homebrew）：brew install node go awscli Windows：从各工具官网安装，或使用 WSL2。</description>
+    </item>
+    <item>
+      <title>克隆与初始化</title>
+      <link>/zh/2_setup/23_bootstrap.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/2_setup/23_bootstrap.html</guid>
+      <description>1. 克隆仓库 （AWS 活动路径：仓库已克隆在 ~/gamelift-workshop——直接 cd 进去即可。）&#xA;git clone https://github.com/malphi/gamelift-workshop.git cd gamelift-workshop 2. 安装依赖 (cd infra &amp;&amp; npm install) (cd backend &amp;&amp; npm install) (cd frontend &amp;&amp; npm install) 3. 初始化 CDK CDK 需要对每个账号/区域做一次性 bootstrap（创建部署所需的 S3 桶和角色）：</description>
+    </item>
+    <item>
+      <title>部署游戏后端</title>
+      <link>/zh/2_setup/24_deploygame.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/2_setup/24_deploygame.html</guid>
+      <description>你要部署什么 两个 CDK stack——游戏的 Web 半边，暂不涉及 GameLift：&#xA;PixelRushBackendStack — API Gateway + Lambda + DynamoDB（登录、车库、商店、 排行榜、匹配 API）以及用于通知的 WebSocket API PixelRushFrontendStack — CloudFront + 私有 S3 上的 Phaser 网页客户端 1. 部署 在 infra/ 目录下：&#xA;npx cdk deploy PixelRushBackendStack PixelRushFrontendStack --require-approval never 约 6 分钟。记下结尾的输出：&#xA;PixelRushBackendStack.ApiUrl = https://xxxx.execute-api.us-east-1.amazonaws.com PixelRushBackendStack.WsNotifyUrl = wss://yyyy.execute-api.us-east-1.amazonaws.com/prod PixelRushFrontendStack.SiteUrl = https://zzzz.cloudfront.net 提示 把 ApiUrl 保存好——模块 6 中你会把它粘贴进游戏，验证自己部署的全链路。</description>
+    </item>
+  </channel>
+</rss>

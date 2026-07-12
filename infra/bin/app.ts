@@ -3,6 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import { BackendStack } from '../lib/backend-stack';
 import { FrontendStack } from '../lib/frontend-stack';
 import { GameLiftStack } from '../lib/gamelift-stack';
+import { DocsStack } from '../lib/docs-stack';
 
 const app = new cdk.App();
 
@@ -29,4 +30,8 @@ new GameLiftStack(app, 'PixelRushGameLiftStack', {
   apiEndpoint: backend.httpApi.apiEndpoint,
   resultsSecret,
   description: 'Pixel Rush workshop: GameLift fleets, queues, FlexMatch',
+});
+
+new DocsStack(app, 'PixelRushDocsStack', {
+  description: 'Pixel Rush workshop: self-hosted tutorial site (Hugo) via CloudFront + private S3',
 });

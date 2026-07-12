@@ -36,8 +36,10 @@ event 的参与者可以访问。这样可以避开 Public 目录的 bar-raising
 
 - [ ] 部署官方 AWS ARENA（仓库主 README 的部署流程），拿到 CloudFront SiteUrl
 - [ ] 把 SiteUrl 提供给学员（决赛日模块使用；无需长期在线，活动结束 cdk destroy）
-- [ ] 确认代码仓库地址已写入 bootstrap 页与 CFN 模板 `RepoUrl`
-      （当前占位：`https://github.com/YOUR-ORG/gamelift-workshop.git`）
+- [x] 代码仓库地址已写入 bootstrap 页与 CFN 模板 `RepoUrl`：
+      `https://github.com/malphi/gamelift-workshop.git`
+- [ ] 确认该 GitHub 仓库已 push 最新代码且可公开访问（dev machine 预克隆
+      与学员 `git clone` 都依赖它）
 
 ## 遗留 TODO
 

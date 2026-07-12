@@ -21,7 +21,8 @@ The event account comes pre-provisioned with a **cloud development machine**
 (VS Code in the browser) that already has every tool installed:
 
 1. On the event page, find the **Event Outputs** section.
-2. Open the **CodeServerURL** link and enter the **CodeServerPassword**.
+2. Open the **CodeServerURL** link (a `cloudfront.net` address) and enter
+   the **CodeServerPassword**.
 3. You'll see VS Code in your browser with the workshop repository already
    cloned at `~/gamelift-workshop`.
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>6. 决赛日 :: Amazon GameLift 实战：部署你的第一个多人在线游戏</title>
+    <link>/zh/6_raceday/index.html</link>
+    <description>时长：约 15 分钟&#xA;一切就绪。最后两个体验：端到端验证你自己的技术栈，然后加入共享竞技场全员对战。</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <atom:link href="/zh/6_raceday/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>验证你自己的服务器</title>
+      <link>/zh/6_raceday/61_verifymyserver.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/6_raceday/61_verifymyserver.html</guid>
+      <description>统一前端 Pixel Rush 客户端内置服务器选择器。登录页上：&#xA;☁️ AWS ARENA — 官方 workshop 服务器（讲师的部署） 🔧 MY SERVER — 任意 Pixel Rush 后端，用它的 API URL 标识 MY SERVER 的原理：调用目标后端的 /api/info 发现端点，确认它是一个 Pixel Rush arena，然后把整个客户端（登录、匹配、通知）接到那套部署上。&#xA;证明你的部署 这是毕业考——你搭建的完整管道，一条流程验证到底：&#xA;打开官方 workshop 站点（讲师提供的 URL——这次不是你自己的 SiteUrl） 登录页点击 🔧 MY SERVER 粘贴你的 ApiUrl（模块 2 保存过；忘了可以重查： aws cloudformation describe-stacks --stack-name PixelRushBackendStack --query &#34;Stacks[0].Outputs&#34;） 输入车手名 + 密码 gamelift → START ENGINE 大厅副标题显示你在自己的 arena 上。现在 RACE → 2P（再开一个标签页）→ 比赛跑在你的 EC2 fleet 上 刚刚发生了什么：由别人的 CloudFront 提供的前端，调用了你的 API Gateway， 经过你的 FlexMatch 撮合，最终在你的 GameLift fleet 上完成了比赛。</description>
+    </item>
+    <item>
+      <title>AWS Arena 全员对战</title>
+      <link>/zh/6_raceday/62_awsarena.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/6_raceday/62_awsarena.html</guid>
+      <description>切换到共享竞技场 该和真人比赛了。回到登录页：&#xA;若在大厅中先点 switch racer，然后选择 ☁️ AWS ARENA 登录（同名可用——各 arena 的玩家数据库彼此独立，你会在这里获得一个新角色） 现在所有学员都在同一个世界里：右侧世界频道能看到大家陆续进入， 排行榜也是全局的。&#xA;锦标赛时间 🏁 讲师会组织分组。建议赛制：&#xA;第一轮：两两配对——双方选同一条赛道，排 2P 第二轮：三人组——排 3P（FlexMatch 按赛道分组，先商量好选哪条赛道！） 决赛：成绩靠前者在最难的已解锁赛道排 4P 比赛技巧：&#xA;按键 动作 ← / →（或 A / D） 变道——点按一次变一条 空格 使用手中道具：🔥 氮气（加速）或 💣 炸弹（丢在身后） 比赛间隙留意世界频道——对局播报显示谁在和谁比赛，青色的 debug 行实时展示 FlexMatch 的工作过程。&#xA;检查点 ★ 你已在 AWS ARENA 上与其他学员完成至少一场多人比赛。看看排行榜—— 你的最好成绩上榜了吗？</description>
+    </item>
+  </channel>
+</rss>

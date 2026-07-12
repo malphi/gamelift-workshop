@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>1. Introduction :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/1_introduction/index.html</link>
+    <description>Duration: ~10 minutes (reading only)&#xA;Before touching the console, let’s build the mental model: why multiplayer games need dedicated servers, and which GameLift component solves which problem.</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/1_introduction/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why Game Servers</title>
+      <link>/1_introduction/11_whygamelift.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/1_introduction/11_whygamelift.html</guid>
+      <description>Why can’t we just use an API? A typical web backend is stateless request/response: the client asks, Lambda answers, nobody remembers anything between calls. That model powers most of Pixel Rush — login, the car shop, leaderboards are all API Gateway + Lambda + DynamoDB.&#xA;A race in progress is different in three fundamental ways:&#xA;Requirement Web API model Game server model State stateless per request 8 cars’ positions, items, collisions held in memory Cadence client-initiated server-driven tick loop (20 updates/sec, every ~50 ms) Authority validation per call one process is the referee — it simulates physics and decides who wins, so nobody can cheat So a multiplayer game session needs a long-lived, stateful, authoritative process that all players connect to simultaneously. That process is the dedicated game server.</description>
+    </item>
+    <item>
+      <title>GameLift Core Concepts</title>
+      <link>/1_introduction/12_coreconcepts.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/1_introduction/12_coreconcepts.html</guid>
+      <description>The component map Everything you deploy today fits on one diagram. Keep it handy — each module of this workshop lights up one box.&#xA;(Diagram labels: BUILD ← your binary · FLEET managed-EC2 / Anywhere ← your laptop · GAME SESSION ← players connect directly · QUEUE places sessions · FLEXMATCH = matchmaking configuration + rule set · events flow via SNS to your Lambda and back to players)</description>
+    </item>
+  </channel>
+</rss>

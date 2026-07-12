@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>7. Cleanup :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/7_cleanup/index.html</link>
+    <description>Duration: ~5 minutes</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/7_cleanup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Destroy the Stacks</title>
+      <link>/7_cleanup/71_destroy.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/7_cleanup/71_destroy.html</guid>
+      <description>Info AWS event path: skip this page — temporary accounts are wiped automatically after the event.&#xA;One command cd infra npx cdk destroy PixelRushGameLiftStack PixelRushFrontendStack PixelRushBackendStack --force Takes ~10 minutes (fleet termination dominates). You can close the terminal — deletion continues server-side.&#xA;Verify (the bill-safe checklist) The only resource with a meaningful hourly cost is the fleet instance. Confirm:</description>
+    </item>
+  </channel>
+</rss>

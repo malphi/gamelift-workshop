@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>8. 总结 :: Amazon GameLift 实战：部署你的第一个多人在线游戏</title>
+    <link>/zh/8_conclusion/index.html</link>
+    <description>时长：约 5 分钟</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <atom:link href="/zh/8_conclusion/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>你学到了什么</title>
+      <link>/zh/8_conclusion/81_recap.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/8_conclusion/81_recap.html</guid>
+      <description>模块 ↔ 能力 ↔ 你做了什么 模块 GameLift 能力 你实际做的事 1 专用游戏服务器、组件模型 建立心智地图 2 —（Serverless 游戏后端） 用 CDK 部署 API + 网页客户端 3 GameLift Anywhere、Server SDK 生命周期 把自己的机器注册为 fleet 算力；在真实 Go 代码中读 InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding；本机托管一局会话 4 Build、托管 fleet、Queue 上传 build；部署 EC2 fleet；读运行时配置/端口/TLS；看 fleet 事件走到 ACTIVE 5 FlexMatch 逐行读规则集（teams、rules、expansions）；追踪票据生命周期；见识 SNS 事件推送；在自己的 fleet 上匹配成局 6 完整管道 通过 arena 选择器验证自己的技术栈；在共享竞技场全员对战 一张图带走 Build ──► Fleet（托管 EC2 / Anywhere）──► 服务器进程（Server SDK） ▲ 玩家 ──► StartMatchmaking ──► FlexMatch ──► Queue ┘（放置游戏会话） ▲ │ └──── SNS ► Lambda ► WebSocket ┘（连接信息 + PlayerSessionId） 如果你能凭记忆重画这张图，你就理解了 GameLift。</description>
+    </item>
+    <item>
+      <title>进阶方向</title>
+      <link>/zh/8_conclusion/82_nextsteps.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/8_conclusion/82_nextsteps.html</guid>
+      <description>继续深入 主题 为什么是自然的下一步 附录：多区域 fleet（本 workshop） 添加东京/新加坡 location 与基于延迟的放置——20 分钟，改一处 CDK Match backfill 向运行中的会话补充玩家（我们刻意关闭了它——赛车不收中途加入者，但大逃杀需要） FleetIQ / Spot 用受管理的 Spot 实例削减最多 70% 的 fleet 成本 容器 fleet 用容器镜像替代 build 打包服务器 玩家身份 用真实鉴权替换 workshop 密码——参见 Custom Game Backend guidance（Steam/Apple/Google 登录、JWT） 会话指标与自动伸缩 基于 PercentAvailableGameSessions 的目标跟踪伸缩 参考资料 Amazon GameLift Servers 文档 FlexMatch 规则集参考 GameLift Server SDK（Go/C++/C#/Unreal/Unity） 本 workshop 的游戏源码——今天部署的一切都可读、可改、任你扩展 感谢与我们同场竞速！🏁</description>
+    </item>
+  </channel>
+</rss>

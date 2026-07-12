@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html id="R-html" lang="en-US" dir="ltr" itemscope itemtype="http://schema.org/Article" data-r-output-format="html">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta name="generator" content="Hugo 0.164.0">
+    <meta name="generator" content="Relearn 9.0.3+36307e4ed23582638ab689240ac7b427217803ee">
+    <meta name="description" content="Module ↔ capability ↔ what you did Module GameLift capability What you actually did 1 Dedicated game servers, component model Built the mental map 2 — (game backend on serverless) Deployed API &#43; web client with CDK 3 GameLift Anywhere, Server SDK lifecycle Registered your machine as fleet compute; read InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding in real Go code; hosted a session locally 4 Builds, managed fleets, queues Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE 5 FlexMatch Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet 6 The full pipeline Verified your stack via the arena selector; raced everyone on the shared arena The one-diagram takeaway Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK) ▲ Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session) ▲ │ └──── SNS ► Lambda ► WebSocket ─┘ (connection info &#43; PlayerSessionId) If you can redraw this from memory, you understand GameLift.">
+    <meta name="author" content="AWS GameTech">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="What You Learned :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game">
+    <meta name="twitter:description" content="Module ↔ capability ↔ what you did Module GameLift capability What you actually did 1 Dedicated game servers, component model Built the mental map 2 — (game backend on serverless) Deployed API &#43; web client with CDK 3 GameLift Anywhere, Server SDK lifecycle Registered your machine as fleet compute; read InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding in real Go code; hosted a session locally 4 Builds, managed fleets, queues Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE 5 FlexMatch Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet 6 The full pipeline Verified your stack via the arena selector; raced everyone on the shared arena The one-diagram takeaway Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK) ▲ Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session) ▲ │ └──── SNS ► Lambda ► WebSocket ─┘ (connection info &#43; PlayerSessionId) If you can redraw this from memory, you understand GameLift.">
+    <meta property="og:url" content="/8_conclusion/81_recap.html">
+    <meta property="og:site_name" content="Hands-on Amazon GameLift: Deploy Your First Multiplayer Game">
+    <meta property="og:title" content="What You Learned :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game">
+    <meta property="og:description" content="Module ↔ capability ↔ what you did Module GameLift capability What you actually did 1 Dedicated game servers, component model Built the mental map 2 — (game backend on serverless) Deployed API &#43; web client with CDK 3 GameLift Anywhere, Server SDK lifecycle Registered your machine as fleet compute; read InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding in real Go code; hosted a session locally 4 Builds, managed fleets, queues Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE 5 FlexMatch Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet 6 The full pipeline Verified your stack via the arena selector; raced everyone on the shared arena The one-diagram takeaway Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK) ▲ Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session) ▲ │ └──── SNS ► Lambda ► WebSocket ─┘ (connection info &#43; PlayerSessionId) If you can redraw this from memory, you understand GameLift.">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="article:section" content="8. Conclusion">
+    <meta itemprop="name" content="What You Learned :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game">
+    <meta itemprop="description" content="Module ↔ capability ↔ what you did Module GameLift capability What you actually did 1 Dedicated game servers, component model Built the mental map 2 — (game backend on serverless) Deployed API &#43; web client with CDK 3 GameLift Anywhere, Server SDK lifecycle Registered your machine as fleet compute; read InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding in real Go code; hosted a session locally 4 Builds, managed fleets, queues Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE 5 FlexMatch Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet 6 The full pipeline Verified your stack via the arena selector; raced everyone on the shared arena The one-diagram takeaway Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK) ▲ Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session) ▲ │ └──── SNS ► Lambda ► WebSocket ─┘ (connection info &#43; PlayerSessionId) If you can redraw this from memory, you understand GameLift.">
+    <meta itemprop="wordCount" content="183">
+    <title>What You Learned :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link href="/8_conclusion/81_recap.html" rel="alternate" hreflang="x-default">
+    <link href="/8_conclusion/81_recap.html" rel="alternate" hreflang="en-US">
+    <link href="/zh/8_conclusion/81_recap.html" rel="alternate" hreflang="zh"><link rel="icon" href="https://awsmedia.s3.amazonaws.com/favicon.ico" type="image/x-icon" />
+
+    <link href="/css/auto-complete/auto-complete.min.css?1783777847" rel="stylesheet">
+    <script src="/js/auto-complete/auto-complete.min.js?1783777847" defer></script>
+    <script src="/js/search-lunr.min.js?1783777847" defer></script>
+    <script src="/js/search.min.js?1783777847" defer></script>
+    <script>
+      window.relearn = window.relearn || {};
+      window.relearn.index_js_url="/searchindex.en.js?1783777847";
+    </script>
+    <script src="/js/lunr/lunr.min.js?1783777847" defer></script>
+    <script src="/js/lunr/lunr.stemmer.support.min.js?1783777847" defer></script>
+    <script src="/js/lunr/lunr.multi.min.js?1783777847" defer></script>
+    <script src="/js/lunr/lunr.en.min.js?1783777847" defer></script>
+    <script>
+      window.relearn = window.relearn || {};
+      window.relearn.contentLangs=['en'];
+    </script>
+    <link href="/fonts/fontawesome/css/all.min.css?1783777847" rel="stylesheet" media="print" onload="this.media='all';this.onload=null;"><noscript><link href="/fonts/fontawesome/css/all.min.css?1783777847" rel="stylesheet"></noscript>
+    <link href="/css/perfect-scrollbar/perfect-scrollbar.min.css?1783777847" rel="stylesheet">
+    <link href="/css/theme.min.css?1783777847" rel="stylesheet">
+    <link href="/css/format-html.min.css?1783777847" rel="stylesheet" id="R-format-style">
+    <script>
+      window.relearn = window.relearn || {};
+      // configuration
+      window.relearn.min = `.min`;
+      window.relearn.path='\/\/8_conclusion\/81_recap.html';
+      window.relearn.relBasePath='..';
+      window.relearn.relBaseUri='..';
+      window.relearn.absBaseUri='';
+      window.relearn.disableInlineCopyToClipboard=false;
+      window.relearn.enableBlockCodeWrap=true;
+      // translations
+      window.T_Copy_to_clipboard = `Copy text to clipboard`;
+      window.T_Copied_to_clipboard = `Text copied to clipboard!`;
+      window.T_Link_copied_to_clipboard = `Link copied to clipboard!`;
+      window.T_Reset_view = `Reset view`;
+      window.T_View_reset = `View reset!`;
+      window.T_No_results_found = `No results found for "{0}"`;
+      window.T_N_results_found = `{1} results found for "{0}"`;
+      window.T_Browser_unsupported_feature = `This browser doesn't support this feature`;
+      // variant stuff
+      window.relearn.themevariants = [ 'auto' ];
+      window.relearn.customvariantprefix = "my-custom-";
+      window.relearn.changeVariant = function(variant) {
+        var oldVariant = document.documentElement.dataset.rThemeVariant;
+        window.localStorage.setItem(window.relearn.absBaseUri + "/variant", variant);
+        document.documentElement.dataset.rThemeVariant = variant;
+        if (oldVariant != variant) {
+          document.dispatchEvent( new CustomEvent('themeVariantLoaded', { detail: { variant, oldVariant } }) );
+          window.relearn.markVariant();
+        }
+      }
+      window.relearn.markVariant = function() {
+        var variant = window.localStorage.getItem(window.relearn.absBaseUri + "/variant");
+        document.querySelectorAll(".R-variantswitcher select").forEach((select) => {select.value = variant;});
+      }
+      window.relearn.initVariant = function() {
+        var variant = window.localStorage.getItem(window.relearn.absBaseUri + "/variant") ?? "";
+        if( !variant ||
+            (!variant.startsWith(window.relearn.customvariantprefix) && !window.relearn.themevariants.includes(variant)) ||
+            (variant.startsWith(window.relearn.customvariantprefix) && !window.localStorage.getItem(window.relearn.absBaseUri + "/variantstylesheet-" + variant)) ){
+          variant = window.relearn.themevariants[0];
+          window.localStorage.setItem(window.relearn.absBaseUri + "/variant", variant);
+        }
+        document.documentElement.dataset.rThemeVariant = variant;
+      }
+      window.relearn.initVariant();
+      window.relearn.markVariant();
+    </script>
+  </head>
+  <body class="mobile-support html" data-origin="/8_conclusion/81_recap.html">
+    <div id="R-body" class="default-animation">
+      <div id="R-body-overlay"></div>
+      <nav id="R-topbar" class="default-animation">
+        <div class="topbar-wrapper default-animation">
+          <div class="topbar-sidebar-divider default-animation"></div>
+          <div class="topbar-area topbar-area-start" data-area="start">
+            <div class="topbar-button topbar-button-sidebar default-animation" data-content-empty="disable" data-width-s="show" data-width-m="hide" data-width-l="hide">
+<span class="btn cstyle button link noborder notitle interactive"><button onclick="toggleNav()" type="button" title="Menu (CTRL&#43;ALT&#43;n)"><i class="fa-fw fas fa-bars"></i></button></span>
+            </div>
+            <div class="topbar-button topbar-button-toc default-animation" data-content-empty="hide" data-width-s="show" data-width-m="show" data-width-l="show">
+<span class="btn cstyle button link noborder notitle interactive"><button onclick="toggleTopbarFlyout(this)" type="button" title="Table of Contents (CTRL&#43;ALT&#43;t)"><i class="fa-fw fas fa-table-list"></i></button></span>
+              <div class="topbar-content">
+                <div class="topbar-content-wrapper">
+<nav class="TableOfContents">
+  <ul>
+    <li><a href="#module--capability--what-you-did">Module ↔ capability ↔ what you did</a></li>
+    <li><a href="#the-one-diagram-takeaway">The one-diagram takeaway</a></li>
+  </ul>
+</nav>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ol class="topbar-breadcrumbs breadcrumbs highlightable" itemscope itemtype="http://schema.org/BreadcrumbList"><li itemscope itemtype="https://schema.org/ListItem" itemprop="itemListElement" class=""><a itemprop="item" href="/index.html"><span itemprop="name">Hands-on Amazon GameLift</span></a><meta itemprop="position" content="1">&nbsp;>&nbsp;</li><li itemscope itemtype="https://schema.org/ListItem" itemprop="itemListElement" class=""><a itemprop="item" href="/8_conclusion/index.html"><span itemprop="name">8. Conclusion</span></a><meta itemprop="position" content="2">&nbsp;>&nbsp;</li><li itemscope itemtype="https://schema.org/ListItem" itemprop="itemListElement" class=""><span itemprop="name">What You Learned</span><meta itemprop="position" content="3"></li>
+          </ol>
+          <div class="topbar-area topbar-area-end" data-area="end">
+            <div class="topbar-button topbar-button-prev default-animation" data-content-empty="disable" data-width-s="show" data-width-m="show" data-width-l="show">
+<span class="btn cstyle button link noborder notitle interactive"><a href="/8_conclusion/index.html" title="8. Conclusion (🡐)"><i class="fa-fw fas fa-chevron-left"></i></a></span>
+            </div>
+            <div class="topbar-button topbar-button-next default-animation" data-content-empty="disable" data-width-s="show" data-width-m="show" data-width-l="show">
+<span class="btn cstyle button link noborder notitle interactive"><a href="/8_conclusion/82_nextsteps.html" title="Next Steps (🡒)"><i class="fa-fw fas fa-chevron-right"></i></a></span>
+            </div>
+            <div class="topbar-button topbar-button-more default-animation" data-content-empty="hide" data-width-s="show" data-width-m="show" data-width-l="show">
+<span class="btn cstyle button link noborder notitle interactive"><button onclick="toggleTopbarFlyout(this)" type="button" title="More"><i class="fa-fw fas fa-ellipsis-v"></i></button></span>
+              <div class="topbar-content">
+                <div class="topbar-content-wrapper">
+                  <div class="topbar-area topbar-area-more" data-area="more">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div id="R-main-overlay"></div>
+      <main id="R-body-inner" class="highlightable 8_conclusion" tabindex="-1">
+        <div class="flex-block-wrapper">
+<article class="default">
+  <header class="headline">
+  </header>
+
+<h1 id="what-you-learned">What You Learned</h1>
+
+<h2 id="module--capability--what-you-did">Module ↔ capability ↔ what you did<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button" title="Copy link to clipboard"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h2>
+<table>
+	<thead>
+			<tr>
+					<th>Module</th>
+					<th>GameLift capability</th>
+					<th>What you actually did</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>1</td>
+					<td>Dedicated game servers, component model</td>
+					<td>Built the mental map</td>
+			</tr>
+			<tr>
+					<td>2</td>
+					<td>— (game backend on serverless)</td>
+					<td>Deployed API + web client with CDK</td>
+			</tr>
+			<tr>
+					<td>3</td>
+					<td><strong>GameLift Anywhere</strong>, <strong>Server SDK lifecycle</strong></td>
+					<td>Registered your machine as fleet compute; read <code>InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding</code> in real Go code; hosted a session locally</td>
+			</tr>
+			<tr>
+					<td>4</td>
+					<td><strong>Builds, managed fleets, queues</strong></td>
+					<td>Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE</td>
+			</tr>
+			<tr>
+					<td>5</td>
+					<td><strong>FlexMatch</strong></td>
+					<td>Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet</td>
+			</tr>
+			<tr>
+					<td>6</td>
+					<td>The full pipeline</td>
+					<td>Verified your stack via the arena selector; raced everyone on the shared arena</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="the-one-diagram-takeaway">The one-diagram takeaway<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button" title="Copy link to clipboard"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h2>
+<div class="highlight actionbar-wrapper wrap-code" dir="auto"><pre tabindex="0"><code>Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK)
+                                                     ▲
+Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session)
+   ▲                               │
+   └──── SNS ► Lambda ► WebSocket ─┘ (connection info + PlayerSessionId)</code></pre></div>
+<p>If you can redraw this from memory, you understand GameLift.</p>
+
+  <footer class="footline">
+  </footer>
+</article>
+        </div>
+      </main>
+    </div>
+    <aside id="R-sidebar" class="default-animation">
+      <div id="R-header-topbar" class="default-animation"></div>
+      <div id="R-header-wrapper" class="default-animation"><a href="/" title="Go home"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 30" width="50%" style="padding:20px 0px;"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#f90;fill-rule:evenodd;}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09,10.85a4.7,4.7,0,0,0,.19,1.48,7.73,7.73,0,0,0,.54,1.19.77.77,0,0,1,.12.38.64.64,0,0,1-.32.49l-1,.7a.83.83,0,0,1-.44.15.69.69,0,0,1-.49-.23,3.8,3.8,0,0,1-.6-.77q-.25-.42-.51-1a6.14,6.14,0,0,1-4.89,2.3,4.54,4.54,0,0,1-3.32-1.19,4.27,4.27,0,0,1-1.22-3.2A4.28,4.28,0,0,1,3.61,7.75,6.06,6.06,0,0,1,7.69,6.46a12.47,12.47,0,0,1,1.76.13q.92.13,1.91.36V5.73a3.65,3.65,0,0,0-.79-2.66A3.81,3.81,0,0,0,7.86,2.3a7.71,7.71,0,0,0-1.79.22,12.78,12.78,0,0,0-1.79.57,4.55,4.55,0,0,1-.58.22l-.26,0q-.35,0-.35-.52V2a1.09,1.09,0,0,1,.12-.58,1.2,1.2,0,0,1,.47-.35A10.88,10.88,0,0,1,5.77.32,10.19,10.19,0,0,1,8.36,0a6,6,0,0,1,4.35,1.35,5.49,5.49,0,0,1,1.38,4.09ZM7.34,13.38a5.36,5.36,0,0,0,1.72-.31A3.63,3.63,0,0,0,10.63,12,2.62,2.62,0,0,0,11.19,11a5.63,5.63,0,0,0,.16-1.44v-.7a14.35,14.35,0,0,0-1.53-.28,12.37,12.37,0,0,0-1.56-.1,3.84,3.84,0,0,0-2.47.67A2.34,2.34,0,0,0,5,11a2.35,2.35,0,0,0,.61,1.76A2.4,2.4,0,0,0,7.34,13.38Zm13.35,1.8a1,1,0,0,1-.64-.16,1.3,1.3,0,0,1-.35-.65L15.81,1.51a3,3,0,0,1-.15-.67.36.36,0,0,1,.41-.41H17.7a1,1,0,0,1,.65.16,1.4,1.4,0,0,1,.33.65l2.79,11,2.59-11A1.17,1.17,0,0,1,24.39.6a1.1,1.1,0,0,1,.67-.16H26.4a1.1,1.1,0,0,1,.67.16,1.17,1.17,0,0,1,.32.65L30,12.39,32.88,1.25A1.39,1.39,0,0,1,33.22.6a1,1,0,0,1,.65-.16h1.54a.36.36,0,0,1,.41.41,1.36,1.36,0,0,1,0,.26,3.64,3.64,0,0,1-.12.41l-4,12.86a1.3,1.3,0,0,1-.35.65,1,1,0,0,1-.64.16H29.25a1,1,0,0,1-.67-.17,1.26,1.26,0,0,1-.32-.67L25.67,3.64,23.11,14.34a1.26,1.26,0,0,1-.32.67,1,1,0,0,1-.67.17Zm21.36.44a11.28,11.28,0,0,1-2.56-.29,7.44,7.44,0,0,1-1.92-.67,1,1,0,0,1-.61-.93v-.84q0-.52.38-.52a.9.9,0,0,1,.31.06l.42.17a8.77,8.77,0,0,0,1.83.58,9.78,9.78,0,0,0,2,.2,4.48,4.48,0,0,0,2.43-.55,1.76,1.76,0,0,0,.86-1.57,1.61,1.61,0,0,0-.45-1.16A4.29,4.29,0,0,0,43,9.22l-2.41-.76A5.15,5.15,0,0,1,38,6.78a3.94,3.94,0,0,1-.83-2.41,3.7,3.7,0,0,1,.45-1.85,4.47,4.47,0,0,1,1.19-1.37A5.27,5.27,0,0,1,40.51.29,7.4,7.4,0,0,1,42.6,0a8.87,8.87,0,0,1,1.12.07q.57.07,1.08.19t.95.26a4.27,4.27,0,0,1,.7.29,1.59,1.59,0,0,1,.49.41.94.94,0,0,1,.15.55v.79q0,.52-.38.52a1.76,1.76,0,0,1-.64-.2,7.74,7.74,0,0,0-3.2-.64,4.37,4.37,0,0,0-2.21.47,1.6,1.6,0,0,0-.79,1.48,1.58,1.58,0,0,0,.49,1.18,4.94,4.94,0,0,0,1.83.92L44.55,7a5.08,5.08,0,0,1,2.57,1.6A3.76,3.76,0,0,1,47.9,11a4.21,4.21,0,0,1-.44,1.93,4.4,4.4,0,0,1-1.21,1.47,5.43,5.43,0,0,1-1.85.93A8.25,8.25,0,0,1,42.05,15.62Z"></path><path class="cls-2" d="M45.19,23.81C39.72,27.85,31.78,30,25,30A36.64,36.64,0,0,1,.22,20.57c-.51-.46-.06-1.09.56-.74A49.78,49.78,0,0,0,25.53,26.4,49.23,49.23,0,0,0,44.4,22.53C45.32,22.14,46.1,23.14,45.19,23.81Z"></path><path class="cls-2" d="M47.47,21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74,3.13-2.2,8.27-1.57,8.86-.83s-.16,5.89-3.09,8.35c-.45.38-.88.18-.68-.32C46.69,25.8,48.17,22.11,47.47,21.21Z"></path></svg></a>
+  
+
+        <search><form action="/search/index.html" method="get">
+          <div class="searchbox default-animation">
+            <button class="search-detail" type="submit" title="Search (CTRL+ALT+f)"><i class="fas fa-fw fa-search"></i></button>
+            <label class="a11y-only" for="R-search-by">Search</label>
+            <input data-search-input id="R-search-by" name="search-by" class="search-by" type="search" placeholder="Search...">
+            <button class="search-clear" type="button" data-search-clear="" title="Clear search"><i class="fas fa-fw fa-times" title="Clear search"></i></button>
+          </div>
+        </form></search>
+      </div>
+      <div id="R-homelinks" class="default-animation homelinks">
+        <div class="R-menu-divider default-animation">
+          <hr class="padding default-animation">
+        </div>
+        <div class="R-sidebarmenu R-shortcutmenu-homelinks default-animation">
+          <ul class="space collapsible-menu">
+            <li class="" data-nav-id="/index.html"><a class="padding" href="/index.html"><i class="fa-fw fas fa-home"></i> Home</a></li>
+          </ul>
+        </div>
+        <div class="R-menu-divider default-animation">
+          <hr class="padding default-animation">
+        </div>
+        <div class="R-sidebarmenu R-shortcutmenu-headercontrols default-animation">
+          <ul class="">
+          </ul>
+        </div>
+        <div class="R-menu-divider default-animation">
+          <hr class="padding default-animation">
+        </div>
+      </div>
+      <div id="R-content-wrapper" class="highlightable">
+        <div class="R-sidebarmenu R-shortcutmenu-main default-animation">
+          <ul class="enlarge morespace collapsible-menu">
+            <li class="" data-nav-id="/1_introduction/index.html"><a class="padding default-animation" href="/1_introduction/index.html">1. Introduction<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-433c6a1a35831902bc2fa35602d40913" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/2_setup/index.html"><a class="padding default-animation" href="/2_setup/index.html">2. Setup<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-bffade23593d7d5149bcb3ebd63791c7" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/3_gameliftanywhere/index.html"><a class="padding default-animation" href="/3_gameliftanywhere/index.html">3. GameLift Anywhere<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-0a54722580c4b1a9b20b900539674b74" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/4_managedfleet/index.html"><a class="padding default-animation" href="/4_managedfleet/index.html">4. Managed Fleet<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-a108348e6cf9ca15d625cee35d22f9fe" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/5_flexmatch/index.html"><a class="padding default-animation" href="/5_flexmatch/index.html">5. FlexMatch<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-b6a310404c500346a41a9da3addcac75" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/6_raceday/index.html"><a class="padding default-animation" href="/6_raceday/index.html">6. Race Day<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-b357d1443985769875f8b2e839041fcf" class="collapsible-menu"></ul></li>
+            <li class="" data-nav-id="/7_cleanup/index.html"><a class="padding default-animation" href="/7_cleanup/index.html">7. Cleanup<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-f39633e14cefac552386f15332548a30" class="collapsible-menu"></ul></li>
+            <li class="parent " data-nav-id="/8_conclusion/index.html"><a class="padding default-animation" href="/8_conclusion/index.html">8. Conclusion<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-f20dbcaf85a00cc7deb087694a579e3d" class="collapsible-menu">
+            <li class="active " data-nav-id="/8_conclusion/81_recap.html"><a class="padding" href="/8_conclusion/81_recap.html">What You Learned<i class="fa-fw fas fa-check read-icon"></i></a></li>
+            <li class="" data-nav-id="/8_conclusion/82_nextsteps.html"><a class="padding" href="/8_conclusion/82_nextsteps.html">Next Steps<i class="fa-fw fas fa-check read-icon"></i></a></li></ul></li>
+            <li class="" data-nav-id="/9_appendix_multiregion/index.html"><a class="padding default-animation" href="/9_appendix_multiregion/index.html">Appendix: Multi-Region (Optional)<i class="fa-fw fas fa-check read-icon"></i></a><ul id="R-subsections-cc0863c863ecc6d65bf38b48699eb6f2" class="collapsible-menu"></ul></li>
+          </ul>
+        </div>
+        <div class="R-sidebarmenu R-shortcutmenu-shortcuts default-animation">
+          <ul class="space collapsible-menu">
+          </ul>
+        </div>
+        <div id="R-footer-margin" class="default-animation"></div>
+        <div class="R-menu-divider default-animation">
+          <hr class="padding default-animation">
+        </div>
+        <div class="R-sidebarmenu R-shortcutmenu-footercontrols default-animation">
+          <ul class="">
+			<li class="R-languageswitcher">
+              <div class="padding menu-control">
+                <i class="fa-fw fas fa-language"></i>
+                <span>&nbsp;</span>
+                <div class="control-style">
+                  <label class="a11y-only" for="R-select-language">Language</label>
+                  <select id="R-select-language">
+                    <option id="R-select-language-en" value="en" data-url="/8_conclusion/81_recap.html" lang="en-US" selected data-selected>English</option>
+                    <option id="R-select-language-zh" value="zh" data-url="/zh/8_conclusion/81_recap.html" lang="zh">简体中文</option>
+                  </select>
+                </div>
+                <div class="clear"></div>
+              </div>
+            </li>
+            <li class="R-historyclearer">
+              <div class="padding menu-control">
+                <i class="fa-fw fas fa-history"></i>
+                <span>&nbsp;</span>
+                <div class="control-style">
+                  <button>Clear History</button>
+                </div>
+                <div class="clear"></div>
+              </div>
+            </li>
+          </ul>
+        </div>
+<div id="R-footer" class="default-animation"><left>
+
+    <a href="https://aws.amazon.com/privacy/?nc1=f_pr">Privacy</a> | <a
+        href="https://aws.amazon.com/terms/?nc1=f_pr">Site Terms</a> | <a
+        href="https://modernization-workshop-bucket.s3-us-west-2.amazonaws.com/license/cc-license.html">CC BY-SA 4.0</a>
+
+</left></div>
+      </div>
+    </aside>
+    <script src="/js/perfect-scrollbar/perfect-scrollbar.min.js?1783777847" defer></script>
+    <script src="/js/theme.min.js?1783777847" defer></script>
+    <div id="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+  </body>
+</html>

@@ -124,6 +124,10 @@ infrastructure:
   cloudformationTemplates:
     - templateLocation: static/infrastructure/workshop-studio.yaml
       label: gamelift-workshop-devmachine
+      participantVisibleStackOutputs:
+        - CodeServerURL
+        - CodeServerPassword
+        - InstancePublicIp
 
 awsAccountConfig:
   accountSources:
@@ -142,11 +146,15 @@ awsAccountConfig:
       recommended:
         - us-east-1
       optional:
+        - us-west-2
         - ap-northeast-1
-        - ap-southeast-1
+    # The dev-machine template is region-agnostic (SSM public AMI parameter,
+    # dynamic GetAZs); us-west-2 is the resiliency fallback.
     deployableRegions:
       recommended:
         - us-east-1
+      optional:
+        - us-west-2
 """
 
 

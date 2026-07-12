@@ -8,7 +8,7 @@ weight: 23
 *（AWS 活动路径：仓库已克隆在 `~/gamelift-workshop`——直接 `cd` 进去即可。）*
 
 ```bash
-git clone https://github.com/YOUR-ORG/gamelift-workshop.git
+git clone https://github.com/malphi/gamelift-workshop.git
 cd gamelift-workshop
 ```
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Appendix: Multi-Region (Optional) :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/9_appendix_multiregion/index.html</link>
+    <description>Duration: ~20 minutes · requires Modules 1–5 completed&#xA;One fleet, three continents — serve players from the region closest to them.</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/9_appendix_multiregion/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Challenge</title>
+      <link>/9_appendix_multiregion/91_challenge.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/9_appendix_multiregion/91_challenge.html</guid>
+      <description>Warning Extra cost: each additional location runs its own c5.large (~$0.085/hour each). Remember to destroy when done.&#xA;The problem Your fleet lives in us-east-1. A player in Asia connects across the Pacific: 200–300 ms RTT — playable, but noticeably behind a local player. Physical distance can’t be optimized away; the server must move closer.</description>
+    </item>
+  </channel>
+</rss>

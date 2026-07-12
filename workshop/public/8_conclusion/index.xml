@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>8. Conclusion :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/8_conclusion/index.html</link>
+    <description>Duration: ~5 minutes</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/8_conclusion/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What You Learned</title>
+      <link>/8_conclusion/81_recap.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/8_conclusion/81_recap.html</guid>
+      <description>Module ↔ capability ↔ what you did Module GameLift capability What you actually did 1 Dedicated game servers, component model Built the mental map 2 — (game backend on serverless) Deployed API + web client with CDK 3 GameLift Anywhere, Server SDK lifecycle Registered your machine as fleet compute; read InitSDK → ProcessReady → OnStartGameSession → AcceptPlayerSession → ProcessEnding in real Go code; hosted a session locally 4 Builds, managed fleets, queues Uploaded a build; deployed an EC2 fleet; read runtime config / ports / TLS; watched fleet events go ACTIVE 5 FlexMatch Read a rule set line by line (teams, rules, expansions); traced the ticket lifecycle; saw SNS event push; matched onto your own fleet 6 The full pipeline Verified your stack via the arena selector; raced everyone on the shared arena The one-diagram takeaway Build ──► Fleet (managed EC2 / Anywhere) ──► server process (Server SDK) ▲ Player ──► StartMatchmaking ──► FlexMatch ──► Queue ─┘ (places game session) ▲ │ └──── SNS ► Lambda ► WebSocket ─┘ (connection info + PlayerSessionId) If you can redraw this from memory, you understand GameLift.</description>
+    </item>
+    <item>
+      <title>Next Steps</title>
+      <link>/8_conclusion/82_nextsteps.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/8_conclusion/82_nextsteps.html</guid>
+      <description>Keep going Topic Why it’s the natural next step Appendix: Multi-region fleets (this workshop) Add Tokyo/Singapore locations and latency-based placement — 20 minutes, one CDK edit Match backfill Fill empty slots in running sessions (we deliberately disabled it — races don’t take late joiners, but battle royales do) FleetIQ / Spot Cut fleet cost up to 70% with Spot instances managed for viability Containers fleets Package the server as a container image instead of a build Player identity Replace the workshop password with real auth — see the Custom Game Backend guidance (Steam/Apple/Google sign-in, JWT) Session metrics &amp; autoscaling Target-tracking on PercentAvailableGameSessions Reference material Amazon GameLift Servers documentation FlexMatch rule set reference GameLift Server SDK (Go/C++/C#/Unreal/Unity) This workshop’s game source — everything you deployed today is readable, hackable and yours to extend Thanks for racing with us! 🏁</description>
+    </item>
+  </channel>
+</rss>

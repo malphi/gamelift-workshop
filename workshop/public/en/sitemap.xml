@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/index.html" />
+  </url>
+  <url>
+    <loc>/1_introduction/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/1_introduction/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/1_introduction/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/1_introduction/index.html" />
+  </url>
+  <url>
+    <loc>/1_introduction/11_whygamelift.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/1_introduction/11_whygamelift.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/1_introduction/11_whygamelift.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/1_introduction/11_whygamelift.html" />
+  </url>
+  <url>
+    <loc>/1_introduction/12_coreconcepts.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/1_introduction/12_coreconcepts.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/1_introduction/12_coreconcepts.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/1_introduction/12_coreconcepts.html" />
+  </url>
+  <url>
+    <loc>/2_setup/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/2_setup/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/2_setup/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/2_setup/index.html" />
+  </url>
+  <url>
+    <loc>/2_setup/21_awsevent.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/2_setup/21_awsevent.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/2_setup/21_awsevent.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/2_setup/21_awsevent.html" />
+  </url>
+  <url>
+    <loc>/2_setup/22_ownaccount.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/2_setup/22_ownaccount.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/2_setup/22_ownaccount.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/2_setup/22_ownaccount.html" />
+  </url>
+  <url>
+    <loc>/2_setup/23_bootstrap.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/2_setup/23_bootstrap.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/2_setup/23_bootstrap.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/2_setup/23_bootstrap.html" />
+  </url>
+  <url>
+    <loc>/2_setup/24_deploygame.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/2_setup/24_deploygame.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/2_setup/24_deploygame.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/2_setup/24_deploygame.html" />
+  </url>
+  <url>
+    <loc>/3_gameliftanywhere/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/3_gameliftanywhere/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/3_gameliftanywhere/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/3_gameliftanywhere/index.html" />
+  </url>
+  <url>
+    <loc>/3_gameliftanywhere/31_concept.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/3_gameliftanywhere/31_concept.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/3_gameliftanywhere/31_concept.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/3_gameliftanywhere/31_concept.html" />
+  </url>
+  <url>
+    <loc>/3_gameliftanywhere/32_serverlifecycle.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/3_gameliftanywhere/32_serverlifecycle.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/3_gameliftanywhere/32_serverlifecycle.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/3_gameliftanywhere/32_serverlifecycle.html" />
+  </url>
+  <url>
+    <loc>/3_gameliftanywhere/33_runanywhere.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/3_gameliftanywhere/33_runanywhere.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/3_gameliftanywhere/33_runanywhere.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/3_gameliftanywhere/33_runanywhere.html" />
+  </url>
+  <url>
+    <loc>/4_managedfleet/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/4_managedfleet/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/4_managedfleet/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/4_managedfleet/index.html" />
+  </url>
+  <url>
+    <loc>/4_managedfleet/41_buildanddeploy.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/4_managedfleet/41_buildanddeploy.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/4_managedfleet/41_buildanddeploy.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/4_managedfleet/41_buildanddeploy.html" />
+  </url>
+  <url>
+    <loc>/4_managedfleet/42_fleetanatomy.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/4_managedfleet/42_fleetanatomy.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/4_managedfleet/42_fleetanatomy.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/4_managedfleet/42_fleetanatomy.html" />
+  </url>
+  <url>
+    <loc>/4_managedfleet/43_verify.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/4_managedfleet/43_verify.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/4_managedfleet/43_verify.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/4_managedfleet/43_verify.html" />
+  </url>
+  <url>
+    <loc>/5_flexmatch/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/5_flexmatch/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/5_flexmatch/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/5_flexmatch/index.html" />
+  </url>
+  <url>
+    <loc>/5_flexmatch/51_rulesets.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/5_flexmatch/51_rulesets.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/5_flexmatch/51_rulesets.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/5_flexmatch/51_rulesets.html" />
+  </url>
+  <url>
+    <loc>/5_flexmatch/52_ticketlifecycle.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/5_flexmatch/52_ticketlifecycle.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/5_flexmatch/52_ticketlifecycle.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/5_flexmatch/52_ticketlifecycle.html" />
+  </url>
+  <url>
+    <loc>/5_flexmatch/53_matchexercise.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/5_flexmatch/53_matchexercise.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/5_flexmatch/53_matchexercise.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/5_flexmatch/53_matchexercise.html" />
+  </url>
+  <url>
+    <loc>/6_raceday/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/6_raceday/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/6_raceday/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/6_raceday/index.html" />
+  </url>
+  <url>
+    <loc>/6_raceday/61_verifymyserver.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/6_raceday/61_verifymyserver.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/6_raceday/61_verifymyserver.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/6_raceday/61_verifymyserver.html" />
+  </url>
+  <url>
+    <loc>/6_raceday/62_awsarena.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/6_raceday/62_awsarena.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/6_raceday/62_awsarena.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/6_raceday/62_awsarena.html" />
+  </url>
+  <url>
+    <loc>/7_cleanup/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/7_cleanup/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/7_cleanup/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/7_cleanup/index.html" />
+  </url>
+  <url>
+    <loc>/7_cleanup/71_destroy.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/7_cleanup/71_destroy.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/7_cleanup/71_destroy.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/7_cleanup/71_destroy.html" />
+  </url>
+  <url>
+    <loc>/8_conclusion/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/8_conclusion/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/8_conclusion/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/8_conclusion/index.html" />
+  </url>
+  <url>
+    <loc>/8_conclusion/81_recap.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/8_conclusion/81_recap.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/8_conclusion/81_recap.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/8_conclusion/81_recap.html" />
+  </url>
+  <url>
+    <loc>/8_conclusion/82_nextsteps.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/8_conclusion/82_nextsteps.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/8_conclusion/82_nextsteps.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/8_conclusion/82_nextsteps.html" />
+  </url>
+  <url>
+    <loc>/9_appendix_multiregion/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/9_appendix_multiregion/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/9_appendix_multiregion/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/9_appendix_multiregion/index.html" />
+  </url>
+  <url>
+    <loc>/9_appendix_multiregion/91_challenge.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/9_appendix_multiregion/91_challenge.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/9_appendix_multiregion/91_challenge.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/9_appendix_multiregion/91_challenge.html" />
+  </url>
+  <url>
+    <loc>/categories/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/categories/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/categories/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/categories/index.html" />
+  </url>
+  <url>
+    <loc>/tags/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="x-default" href="/tags/index.html" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="/tags/index.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="/zh/tags/index.html" />
+  </url>
+</urlset>

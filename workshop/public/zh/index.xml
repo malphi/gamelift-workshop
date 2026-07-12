@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Amazon GameLift 实战 :: Amazon GameLift 实战：部署你的第一个多人在线游戏</title>
+    <link>/zh/index.html</link>
+    <description>部署你的第一个多人在线游戏 欢迎！在大约 2 小时内，你将在 AWS 上部署并运营一个完整的多人在线游戏—— 复古像素风赛车游戏 Pixel Rush——并借助它学习 Amazon GameLift Servers 的核心能力：&#xA;什么是专用游戏服务器，实时多人游戏为什么需要它 每个托管游戏都要实现的 GameLift Server SDK 生命周期 GameLift Anywhere——把自己的机器注册为 fleet 算力，快速迭代 托管 EC2 fleet——生产级托管：build、运行时配置、会话队列 FlexMatch——基于规则的匹配、票据与事件通知 最后，你会和其他学员在共享竞技场同场对战——而匹配、会话放置、实时状态同步的 每一环，都跑在你亲手部署的基础设施上。&#xA;┌─────────────────┐ │ API Gateway + │ ┌─ REST ──► Lambda + │ Login / Garage / │ │ DynamoDB │ Leaderboard │ └─────────────────┘ │ │ ┌─────────────────┐ ┌─────────┴───┐ │ API Gateway │ │ Browser │ │ WebSocket API │ Match Result │ (Phaser 3) ├─ WS ┼─────────────────┤ Notifications │ │ │ │Lambda │ │Web Client │ └──────┼──────────┘ │ │ ▲ └─────────┬───┘ │ │ ┌──────┼──────────┐ │ │ │ │ └─ WS ────► GameLift Go Server Real-time Combat │ │ @ 20Hz └─────────────────┘ ┌────────────┐ ┌───────┐ ┌──────────┐ │ FlexMatch │ ───► │ SNS │ ───► │ Lambda │ ───► Push to waiting players └────────────┘ └───────┘ └──────────┘ 信息 游戏代码（Go 服务器、TypeScript 后端、Phaser 前端）已备好、开箱即部署—— 你会带读关键代码，但全程无需修改任何代码。每一步要么是可复制粘贴的命令， 要么是 AWS 控制台上的观察。</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <atom:link href="/zh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>1. 引言</title>
+      <link>/zh/1_introduction/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/1_introduction/index.html</guid>
+      <description>时长：约 10 分钟（纯阅读）&#xA;在动手之前，先建立心智模型：多人游戏为什么需要专用服务器， 以及 GameLift 的每个组件分别解决什么问题。</description>
+    </item>
+    <item>
+      <title>2. 环境准备</title>
+      <link>/zh/2_setup/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/2_setup/index.html</guid>
+      <description>时长：约 20 分钟&#xA;两条路径——按你的参与方式选择：&#xA;AWS 主办活动 → 提供临时账号和浏览器 IDE（2.1） 自己的账号 → 在本机安装少量工具（2.2） 之后所有人统一：克隆仓库、初始化 CDK、部署游戏后端。</description>
+    </item>
+    <item>
+      <title>3. GameLift Anywhere</title>
+      <link>/zh/3_gameliftanywhere/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/3_gameliftanywhere/index.html</guid>
+      <description>时长：约 25 分钟&#xA;你的第一局游戏会话——托管在你自己的机器上，由 GameLift 编排。 先理解 Anywhere 概念，带读 Server SDK 代码，然后跑起来。</description>
+    </item>
+    <item>
+      <title>4. 托管 Fleet</title>
+      <link>/zh/4_managedfleet/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/4_managedfleet/index.html</guid>
+      <description>时长：约 25 分钟（含约 15 分钟 fleet 激活等待——用于阅读）&#xA;进入生产托管：上传你的服务器 build，让 GameLift 在托管 EC2 实例上运行它。</description>
+    </item>
+    <item>
+      <title>5. FlexMatch</title>
+      <link>/zh/5_flexmatch/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/5_flexmatch/index.html</guid>
+      <description>时长：约 20 分钟&#xA;最后一块拼图：玩家如何找到彼此。规则集、票据、事件管道—— 然后把匹配指向你的新 EC2 fleet 并开赛。</description>
+    </item>
+    <item>
+      <title>6. 决赛日</title>
+      <link>/zh/6_raceday/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/6_raceday/index.html</guid>
+      <description>时长：约 15 分钟&#xA;一切就绪。最后两个体验：端到端验证你自己的技术栈，然后加入共享竞技场全员对战。</description>
+    </item>
+    <item>
+      <title>7. 资源清理</title>
+      <link>/zh/7_cleanup/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/7_cleanup/index.html</guid>
+      <description>时长：约 5 分钟</description>
+    </item>
+    <item>
+      <title>8. 总结</title>
+      <link>/zh/8_conclusion/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/8_conclusion/index.html</guid>
+      <description>时长：约 5 分钟</description>
+    </item>
+    <item>
+      <title>附录：多区域（可选）</title>
+      <link>/zh/9_appendix_multiregion/index.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/zh/9_appendix_multiregion/index.html</guid>
+      <description>时长：约 20 分钟 · 需先完成模块 1–5&#xA;一个 fleet、三大洲——让玩家连接离自己最近的区域。</description>
+    </item>
+  </channel>
+</rss>

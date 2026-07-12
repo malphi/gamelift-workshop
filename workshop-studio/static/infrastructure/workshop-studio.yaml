@@ -9,7 +9,7 @@ Description: >-
 Parameters:
   RepoUrl:
     Type: String
-    Default: https://github.com/YOUR-ORG/gamelift-workshop.git
+    Default: https://github.com/malphi/gamelift-workshop.git
     Description: Workshop repository to pre-clone
   InstanceType:
     Type: String
@@ -70,12 +70,13 @@ Resources:
     Properties:
       GroupDescription: >-
         code-server access + game ports (this instance acts as the GameLift
-        Anywhere compute in Module 3; participants' browsers connect to the
+        Anywhere compute in Module 3; participant browsers connect to the
         game server running on it).
       VpcId: !Ref WorkshopVpc
       SecurityGroupIngress:
-        - { IpProtocol: tcp, FromPort: 8080, ToPort: 8080, CidrIp: 0.0.0.0/0, Description: code-server (HTTPS terminated by caddy) }
-        - { IpProtocol: tcp, FromPort: 443,  ToPort: 443,  CidrIp: 0.0.0.0/0, Description: caddy TLS for code-server }
+        # code-server origin: reached by CloudFront edges, not participants
+        # directly (password auth protects it either way)
+        - { IpProtocol: tcp, FromPort: 8080, ToPort: 8080, CidrIp: 0.0.0.0/0, Description: code-server HTTP origin for CloudFront }
         - { IpProtocol: tcp, FromPort: 1935, ToPort: 1935, CidrIp: 0.0.0.0/0, Description: Anywhere game server (Module 3) }
         - { IpProtocol: udp, FromPort: 1935, ToPort: 1935, CidrIp: 0.0.0.0/0, Description: Anywhere game server WebRTC/UDP }
 
@@ -130,7 +131,10 @@ Resources:
           # CDK
           npm install -g aws-cdk
 
-          # code-server (VS Code in the browser)
+          # code-server (VS Code in the browser). Plain HTTP on 8080 — TLS,
+          # the public 443 and a real certificate come from the CloudFront
+          # distribution in front (corp networks reject bare-IP self-signed
+          # URLs; a *.cloudfront.net URL passes).
           curl -fsSL https://code-server.dev/install.sh | sh
           useradd -m workshop || true
           usermod -aG docker workshop
@@ -173,10 +177,34 @@ Resources:
           SVC
           systemctl enable --now code-server
 
+  # ---------- CloudFront in front of code-server ----------
+  # Participants open https://xxxx.cloudfront.net — a real TLS cert on 443,
+  # which corporate networks accept (bare-IP origins are often blocked).
+  # WebSockets (VS Code terminal) pass through CloudFront natively.
+  CodeServerDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: gamelift-workshop code-server
+        DefaultCacheBehavior:
+          TargetOriginId: code-server
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+          # managed policies: CachingDisabled / AllViewerExceptHostHeader
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+          OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+        Origins:
+          - Id: code-server
+            DomainName: !GetAtt DevInstance.PublicDnsName
+            CustomOriginConfig:
+              HTTPPort: 8080
+              OriginProtocolPolicy: http-only
+
 Outputs:
   CodeServerURL:
-    Description: Open this in your browser (accept the self-signed warning if any)
-    Value: !Sub http://${DevInstance.PublicIp}:8080
+    Description: Open this in your browser (VS Code login page)
+    Value: !Sub https://${CodeServerDistribution.DomainName}
   CodeServerPassword:
     Description: Password for the browser IDE
     Value: !Ref CodeServerPassword

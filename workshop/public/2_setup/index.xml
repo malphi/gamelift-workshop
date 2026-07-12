@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>2. Setup :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/2_setup/index.html</link>
+    <description>Duration: ~20 minutes&#xA;Two paths — pick the one that matches how you’re attending:&#xA;At an AWS event → a temporary account and a browser IDE are provided (2.1) In your own account → install a few tools locally (2.2) Then everyone clones the repo, bootstraps CDK, and deploys the game backend.</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/2_setup/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Path A: At an AWS Event</title>
+      <link>/2_setup/21_awsevent.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/2_setup/21_awsevent.html</guid>
+      <description>Info Follow this page only if you’re at an AWS-hosted event with a Workshop Studio access code. Otherwise skip to Path B: Own Account.&#xA;1. Join the event Open Workshop Studio and enter the access code provided by your instructor. Accept the terms and click Join event. You now have a temporary AWS account — nothing you do today costs you anything. 2. Open your development environment The event account comes pre-provisioned with a cloud development machine (VS Code in the browser) that already has every tool installed:</description>
+    </item>
+    <item>
+      <title>Path B: Own Account</title>
+      <link>/2_setup/22_ownaccount.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/2_setup/22_ownaccount.html</guid>
+      <description>Warning Cost estimate: the resources deployed today cost roughly $0.20/hour while running (one c5.large GameLift instance + serverless components). The Cleanup module removes everything; a full 2-hour run typically costs under $1.&#xA;1. AWS account &amp; credentials You need an account with administrator-level access (CDK creates IAM roles, GameLift fleets, CloudFront distributions). Configure credentials locally:</description>
+    </item>
+    <item>
+      <title>Clone &amp; Bootstrap</title>
+      <link>/2_setup/23_bootstrap.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/2_setup/23_bootstrap.html</guid>
+      <description>1. Clone the repository (AWS event path: already cloned at ~/gamelift-workshop — just cd into it.)&#xA;git clone https://github.com/malphi/gamelift-workshop.git cd gamelift-workshop 2. Install dependencies (cd infra &amp;&amp; npm install) (cd backend &amp;&amp; npm install) (cd frontend &amp;&amp; npm install) 3. Bootstrap CDK CDK needs a one-time bootstrap per account/region (creates an S3 bucket and roles it deploys through):</description>
+    </item>
+    <item>
+      <title>Deploy the Game Backend</title>
+      <link>/2_setup/24_deploygame.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/2_setup/24_deploygame.html</guid>
+      <description>What you’re deploying Two CDK stacks — the web half of the game, no GameLift yet:&#xA;PixelRushBackendStack — API Gateway + Lambda + DynamoDB (login, garage, shop, leaderboard, matchmaking API) and a WebSocket API for notifications PixelRushFrontendStack — the Phaser web client on CloudFront + private S3 1. Deploy From the infra/ directory:</description>
+    </item>
+  </channel>
+</rss>

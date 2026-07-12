@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>4. Managed Fleet :: Hands-on Amazon GameLift: Deploy Your First Multiplayer Game</title>
+    <link>/4_managedfleet/index.html</link>
+    <description>Duration: ~25 minutes (including ~15 min fleet activation — used for reading)&#xA;Time for production hosting: upload your server build and let GameLift run it on managed EC2 instances.</description>
+    <generator>Hugo</generator>
+    <language>en-US</language>
+    <atom:link href="/4_managedfleet/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hands-on: Build &amp; Deploy</title>
+      <link>/4_managedfleet/41_buildanddeploy.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/4_managedfleet/41_buildanddeploy.html</guid>
+      <description>1. Cross-compile the server for the fleet Fleet instances run Amazon Linux 2023 on x86_64. Go cross-compiles in one command:&#xA;./scripts/build-server-linux.sh The script produces server/dist/linux/ containing:&#xA;pixelrush-server — the Linux binary (statically linked, ~8 MB) install.sh — runs once per instance at deploy time (permissions, log dir) 2. Deploy the fleet cd infra npx cdk deploy PixelRushGameLiftStack -c stage=ec2 --require-approval never The -c stage=ec2 flag extends the stack you already have with three resources:</description>
+    </item>
+    <item>
+      <title>Fleet Anatomy (read while waiting)</title>
+      <link>/4_managedfleet/42_fleetanatomy.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/4_managedfleet/42_fleetanatomy.html</guid>
+      <description>While the fleet activates, let’s read the configuration that’s being applied. Open infra/lib/gamelift-stack.ts and find the Ec2Fleet definition.&#xA;Runtime configuration — what runs on each instance runtimeConfiguration: { serverProcesses: [ { launchPath: &#39;/local/game/pixelrush-server&#39;, parameters: &#39;--port 8443 ...&#39;, concurrentExecutions: 1 }, { launchPath: &#39;/local/game/pixelrush-server&#39;, parameters: &#39;--port 2083 ...&#39;, concurrentExecutions: 1 }, ], }, Each instance runs two server processes on different ports → two concurrent game sessions per instance. Density is a cost lever: big studios run dozens of processes per box. launchPath always starts with /local/game/ — that’s where GameLift unpacks your build.</description>
+    </item>
+    <item>
+      <title>Verify the Fleet</title>
+      <link>/4_managedfleet/43_verify.html</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/4_managedfleet/43_verify.html</guid>
+      <description>Read the fleet’s own story Console → Amazon GameLift Servers → Fleets → PixelRushFleet → Events tab. You can replay the whole activation as a timeline:&#xA;FLEET_CREATED FLEET_STATE_DOWNLOADING ← pulling your build from S3 FLEET_CREATION_RUNNING_INSTALLER ← install.sh executed FLEET_STATE_VALIDATING FLEET_CREATION_VALIDATING_RUNTIME_CONFIG FLEET_STATE_BUILDING FLEET_STATE_ACTIVATING ← processes launched, health checks passing FLEET_STATE_ACTIVE ← ready to host Tip This Events tab is your first stop whenever a fleet misbehaves — a crashing server binary shows up here as SERVER_PROCESS_CRASHED or SERVER_PROCESS_SDK_INITIALIZATION_TIMEOUT with a per-event explanation.</description>
+    </item>
+  </channel>
+</rss>
