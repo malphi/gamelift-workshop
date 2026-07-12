@@ -50,16 +50,8 @@ PixelRushAnywhereFleet → Computes** 页签：
 - 显示它的 IP 和 GameLift SDK endpoint
 
 你已经把自己的硬件注册成了 GameLift fleet 算力：GameLift 现在知道这台机器
-存在、健康（`ProcessReady` + 心跳），可以向它派发游戏会话。
-
-:::alert{type=info}
-**为什么停在注册这一步。** GameLift 编排在 Anywhere 上是真的能工作的——你甚至
-可以亲眼看到：用两个浏览器标签发起 **2P** 比赛，服务器终端会打印
-`OnStartGameSession` → `game session active`。但 Anywhere 机器没有受信任的 TLS
-证书，浏览器拒绝对不受信任的主机建立安全的 `wss://` 连接，所以玩家其实无法真正
-完成加入。这是**刻意的设计**：Anywhere 用于**快速本地迭代、验证 SDK 集成**，而非
-生产对战。真正的多人比赛在模块 4——托管 fleet + GameLift 签发的证书。
-:::
+存在、健康（`ProcessReady` + 心跳），可以向它派发游戏会话。Anywhere 用于
+**快速本地迭代、验证 SDK 集成**——真正的多人比赛在模块 4，托管 fleet 上。
 
 :::alert{type=warning}
 auth token 空闲约 15 分钟后过期。如果后面服务器退出了，重新运行
