@@ -65,7 +65,7 @@ Open **SiteUrl** in your browser:
    just deployed. (The **🔧 MY SERVER** option is for pointing *someone else's*
    frontend at your backend; you'll use it in Module 6, not here.)
 2. Enter any racer name + the workshop password `gamelift` → **START ENGINE**
-3. You land in the lobby with a random starter persona (level, coins, a car)
+3. You land in the lobby as a level-1 rookie with a random car and coin balance
 4. Browse **GARAGE** and **SHOP** — buy a car if you have the coins!
 
 :::alert{type=info}

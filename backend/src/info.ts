@@ -11,6 +11,9 @@ export const handler = withOriginVerify(async (_event: APIGatewayProxyEventV2): 
     game: 'pixelrush',
     arena: process.env.ARENA_NAME ?? 'custom-arena',
     wsNotifyUrl: process.env.WS_NOTIFY_URL ?? '',
+    // Regions this deployment's fleet spans, so the client probes exactly the
+    // right ones for latency-aware placement (no hardcoding per deployment).
+    fleetRegions: (process.env.FLEET_REGIONS ?? 'us-east-1').split(',').map((r) => r.trim()).filter(Boolean),
     version: 1,
   });
 });

@@ -26,6 +26,9 @@ export interface BackendStackProps extends cdk.StackProps {
   matchmakingConfigPrefix: string;
   /** Fleet name to place sessions into directly (placementMode 'open'). */
   openPlacementFleet: string;
+  /** All regions the managed fleet spans (deploy region + extras). Used to
+   *  backfill LatencyInMs when the client's probe is missing/failed. */
+  fleetRegions: string[];
 }
 
 export class BackendStack extends cdk.Stack {
@@ -176,6 +179,7 @@ export class BackendStack extends cdk.Stack {
       PLACEMENT_MODE: props.placementMode,
       MATCHMAKING_CONFIG_PREFIX: props.matchmakingConfigPrefix,
       OPEN_PLACEMENT_FLEET: props.openPlacementFleet,
+      FLEET_REGIONS: props.fleetRegions.join(','),
       WS_API_ENDPOINT: wsEndpoint, // debug traces to the world channel
     });
     this.mainTable.grantReadWriteData(matchmakingFn);
@@ -209,6 +213,7 @@ export class BackendStack extends cdk.Stack {
     const infoFn = fn('InfoFn', 'info.ts', {
       ARENA_NAME: this.node.tryGetContext('arenaName') ?? 'my-arena',
       WS_NOTIFY_URL: wsStage.url,
+      FLEET_REGIONS: props.fleetRegions.join(','),
     });
     this.httpApi.addRoutes({
       path: '/api/info',

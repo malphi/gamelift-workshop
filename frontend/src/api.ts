@@ -1,6 +1,7 @@
 // REST client for the backend. Same-origin via CloudFront (/api/*) in the
 // deployed setup; override with ?api= or config.json apiUrl for local dev
 // against a raw execute-api endpoint.
+import { setFleetRegions } from './latency';
 
 export interface Player {
   playerId: string; name: string; level: number; coins: number;
@@ -50,7 +51,7 @@ export function saveArena(a: ArenaChoice): void {
  * Validates a custom arena URL by fetching its /api/info. Returns the arena
  * descriptor on success; throws with a friendly message otherwise.
  */
-export async function probeArena(apiUrl: string): Promise<{ arena: string; wsNotifyUrl: string }> {
+export async function probeArena(apiUrl: string): Promise<{ arena: string; wsNotifyUrl: string; fleetRegions: string[] }> {
   const base = apiUrl.replace(/\/+$/, '');
   const res = await fetch(`${base}/api/info`, {
     headers: { 'x-origin-verify': WORKSHOP_ORIGIN_SECRET },
@@ -58,7 +59,11 @@ export async function probeArena(apiUrl: string): Promise<{ arena: string; wsNot
   if (!res.ok) throw new Error(`arena responded HTTP ${res.status}`);
   const info = await res.json();
   if (info.game !== 'pixelrush') throw new Error('not a PixelRush arena');
-  return { arena: info.arena ?? 'custom-arena', wsNotifyUrl: info.wsNotifyUrl ?? '' };
+  return {
+    arena: info.arena ?? 'custom-arena',
+    wsNotifyUrl: info.wsNotifyUrl ?? '',
+    fleetRegions: Array.isArray(info.fleetRegions) ? info.fleetRegions : [],
+  };
 }
 
 export async function initConfig(): Promise<void> {
@@ -76,6 +81,7 @@ export async function initConfig(): Promise<void> {
     try {
       const info = await probeArena(arena.apiUrl);
       wsNotifyUrl = info.wsNotifyUrl;
+      setFleetRegions(info.fleetRegions);
       return;
     } catch {
       // unreachable custom arena: fall back to the official one
@@ -89,6 +95,11 @@ export async function initConfig(): Promise<void> {
     if (!override && cfg.apiUrl) apiBase = (cfg.apiUrl as string).replace(/\/$/, '');
     if (!wsOverride && cfg.wsNotifyUrl) wsNotifyUrl = cfg.wsNotifyUrl;
   } catch { /* no config.json: same-origin /api (CloudFront) */ }
+  // Discover this deployment's fleet regions so latency probing targets them.
+  try {
+    const info = await (await fetch(`${apiBase}/info`, { headers: customHeaders })).json();
+    if (Array.isArray(info.fleetRegions)) setFleetRegions(info.fleetRegions);
+  } catch { /* /api/info unavailable: keep default probe set */ }
 }
 
 export function getNotifyUrl(): string { return wsNotifyUrl; }

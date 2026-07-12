@@ -2,7 +2,13 @@
 // Starts when the lobby loads (player is browsing, zero perceived cost),
 // probes all fleet regions in parallel, caches results for 10 minutes.
 
-const FLEET_REGIONS = ['us-east-1', 'ap-northeast-1', 'ap-southeast-1'];
+// Default probe set; overridden at runtime by the regions the deployment's
+// /api/info reports (setFleetRegions), so the client always probes exactly
+// the fleet's regions — arena or a student's own single-region stack.
+let fleetRegions = ['us-east-1', 'ap-southeast-1'];
+export function setFleetRegions(regions: string[]): void {
+  if (regions.length > 0) fleetRegions = regions;
+}
 const CACHE_MS = 10 * 60 * 1000;
 const PROBE_TIMEOUT_MS = 2500;
 const UNREACHABLE_MS = 999;
@@ -43,7 +49,7 @@ export async function getLatencies(): Promise<Record<string, number>> {
   if (inflight) return inflight;
   inflight = (async () => {
     const entries = await Promise.all(
-      FLEET_REGIONS.map(async (r) => [r, await probeRegion(r)] as const),
+      fleetRegions.map(async (r) => [r, await probeRegion(r)] as const),
     );
     const latencies = Object.fromEntries(entries);
     cache = { at: Date.now(), latencies };

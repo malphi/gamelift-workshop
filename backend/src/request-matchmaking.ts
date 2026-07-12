@@ -14,6 +14,13 @@ const gamelift = new GameLiftClient({});
 // rules. 'flexmatch' (Module 3 Anywhere, Module 5 EC2): rule-based matchmaking.
 const PLACEMENT_MODE = process.env.PLACEMENT_MODE ?? 'flexmatch';
 
+// Regions the managed fleet spans, for LatencyInMs backfill (see below).
+const FLEET_REGIONS = (process.env.FLEET_REGIONS ?? 'us-east-1')
+  .split(',').map((r) => r.trim()).filter(Boolean);
+// A region we couldn't measure is probably far — high enough to be a fallback,
+// low enough that FlexMatch still accepts it as a shared placement region.
+const FALLBACK_LATENCY_MS = 250;
+
 /**
  * POST /api/matchmaking/request {playerId, trackId}
  *   -> StartMatchmaking with level + trackId player attributes; returns ticketId.
@@ -36,6 +43,13 @@ export const handler = withOriginVerify(async (event: APIGatewayProxyEventV2): P
         latencyInMs[region] = Math.min(9999, Math.max(1, Math.round(ms as number)));
       }
     }
+  }
+  // Backfill: every fleet region must have a LatencyInMs value, or a
+  // latency-aware queue can't find a region two players share (one player's
+  // failed probe would otherwise leave that region absent and unmatchable).
+  // Missing region => assume a high-but-usable latency so it's a last resort.
+  for (const region of FLEET_REGIONS) {
+    if (latencyInMs[region] === undefined) latencyInMs[region] = FALLBACK_LATENCY_MS;
   }
 
   const player = await ddb.send(new GetCommand({

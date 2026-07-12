@@ -26,12 +26,21 @@ const ec2Matchmaking = stage === 'ec2-match';
 const placementMode = stage === 'ec2' ? 'open' : 'flexmatch';
 const matchmakingConfigPrefix = ec2Matchmaking ? 'PixelRushMatchEc2' : 'PixelRushMatchAnywhere';
 
+// Regions the managed fleet spans: deploy region + optional extras. The
+// backend backfills LatencyInMs for these when a client's probe is missing,
+// so a latency-aware queue can always find a common region for two players.
+const deployRegion = process.env.CDK_DEFAULT_REGION ?? 'us-east-1';
+const extraRegions = (app.node.tryGetContext('extraRegions') as string | undefined)
+  ?.split(',').map((r) => r.trim()).filter(Boolean) ?? [];
+const fleetRegions = [deployRegion, ...extraRegions];
+
 const backend = new BackendStack(app, 'PixelRushBackendStack', {
   resultsSecret,
   originVerifySecret,
   placementMode,
   matchmakingConfigPrefix,
   openPlacementFleet: 'PixelRushFleet', // EC2 fleet name (created at stage=ec2/ec2-match)
+  fleetRegions,
   description: 'Pixel Rush workshop: player data, shop, leaderboard, matchmaking APIs',
 });
 

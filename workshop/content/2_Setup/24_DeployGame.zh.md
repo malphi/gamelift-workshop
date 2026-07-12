@@ -61,7 +61,7 @@ PixelRushFrontendStack.SiteUrl = https://zzzz.cloudfront.net
    它指的就是"本站点自己的后端"——也就是你刚部署的那个。（**🔧 MY SERVER**
    选项用于把*别人的*前端指向你的后端，模块 6 才会用到，这里不用。）
 2. 输入任意车手名 + workshop 密码 `gamelift` → **START ENGINE**
-3. 进入大厅，获得随机初始角色（等级、金币、一辆车）
+3. 进入大厅，作为 1 级新手，随机获得一辆车和金币余额
 4. 逛逛**车库**和**商店**——金币够的话买辆车！
 
 {{% notice info %}}
