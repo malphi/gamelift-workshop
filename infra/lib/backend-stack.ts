@@ -16,6 +16,16 @@ export interface BackendStackProps extends cdk.StackProps {
   resultsSecret: string;
   /** Secret CloudFront adds as x-origin-verify; Lambdas reject other callers. */
   originVerifySecret: string;
+  /**
+   * How the matchmaking Lambda gets players onto a server:
+   *  - 'flexmatch': StartMatchmaking against a config (Module 3 Anywhere, Module 5 EC2)
+   *  - 'open':      direct CreateGameSession/CreatePlayerSession, no rules (Module 4)
+   */
+  placementMode: 'flexmatch' | 'open';
+  /** FlexMatch config name prefix (placementMode 'flexmatch'); + size picks the config. */
+  matchmakingConfigPrefix: string;
+  /** Fleet name to place sessions into directly (placementMode 'open'). */
+  openPlacementFleet: string;
 }
 
 export class BackendStack extends cdk.Stack {
@@ -161,16 +171,26 @@ export class BackendStack extends cdk.Stack {
 
     // ---- Matchmaking request Lambda ----
     const matchmakingFn = fn('RequestMatchmakingFn', 'request-matchmaking.ts', {
-      // Prefix + match size (1/2/4/8) selects the config. Anywhere is the
-      // default; flip to EC2 via `-c matchmakingConfig=PixelRushMatchEc2`.
-      MATCHMAKING_CONFIG_PREFIX: this.node.tryGetContext('matchmakingConfig') ?? 'PixelRushMatchAnywhere',
+      // Module 4 places directly ('open'); Module 3/5 use FlexMatch. Prefix +
+      // match size (1/2/3/4) selects the FlexMatch config.
+      PLACEMENT_MODE: props.placementMode,
+      MATCHMAKING_CONFIG_PREFIX: props.matchmakingConfigPrefix,
+      OPEN_PLACEMENT_FLEET: props.openPlacementFleet,
       WS_API_ENDPOINT: wsEndpoint, // debug traces to the world channel
     });
     this.mainTable.grantReadWriteData(matchmakingFn);
     wsStage.grantManagementApiAccess(matchmakingFn);
     matchmakingFn.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['gamelift:StartMatchmaking', 'gamelift:DescribeMatchmaking', 'gamelift:StopMatchmaking'],
-      resources: ['*'], // matchmaking config ARNs are cross-stack; '*' is fine for a workshop
+      actions: [
+        // FlexMatch path (Module 3 Anywhere, Module 5 EC2)
+        'gamelift:StartMatchmaking', 'gamelift:DescribeMatchmaking', 'gamelift:StopMatchmaking',
+        // Open-placement path (Module 4): find the fleet, find or create a
+        // session, seat the player
+        'gamelift:DescribeFleetAttributes',
+        'gamelift:SearchGameSessions', 'gamelift:DescribeGameSessions',
+        'gamelift:CreateGameSession', 'gamelift:CreatePlayerSession',
+      ],
+      resources: ['*'], // config/fleet ARNs are cross-stack; '*' is fine for a workshop
     }));
     this.httpApi.addRoutes({
       path: '/api/matchmaking/request',

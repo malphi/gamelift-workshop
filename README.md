@@ -110,24 +110,24 @@ cd infra && npx cdk deploy PixelRushGameLiftStack
 
 ## Part 3 — 托管 EC2 fleet（多区域）
 
-构建 Linux 服务器并部署 fleet（三个区域全部激活约 15-20 分钟）：
+构建 Linux 服务器并部署 fleet（三个区域全部激活约 15-20 分钟）。两个阶段：
 
 ```bash
 ./scripts/build-server-linux.sh
-cd infra && npx cdk deploy PixelRushGameLiftStack -c stage=ec2
+
+# 阶段一 stage=ec2：托管 fleet + 直接放置（无匹配规则）——同赛道就共享一局
+cd infra && npx cdk deploy PixelRushGameLiftStack PixelRushBackendStack -c stage=ec2
+
+# 阶段二 stage=ec2-match：在同一 fleet 前加上 FlexMatch 规则匹配
+npx cdk deploy PixelRushGameLiftStack PixelRushBackendStack -c stage=ec2-match
 ```
 
-把匹配切到 EC2 fleet 并重新部署后端：
-
-```bash
-npx cdk deploy PixelRushBackendStack -c matchmakingConfig=PixelRushMatchEc2 -c stage=ec2
-```
-
-再次对战——浏览器通过 `wss://<DnsName>:8443` 连到 GameLift 托管实例，会话被放置
-在延迟最优的区域（看世界频道的青色 debug 消息确认）。控制台观察点：
+对战——浏览器通过 `wss://<DnsName>:8443` 连到 GameLift 托管实例（托管 fleet 有
+GameLift 签发的可信 TLS 证书，无需手动信任）。`ec2-match` 阶段会话经 FlexMatch
+放置在延迟最优的区域（看世界频道的青色 debug 消息确认）。控制台观察点：
 *GameLift → Fleets → PixelRushFleet → Game sessions / Events*。
 
-随时可切回本机服务器：`-c matchmakingConfig=PixelRushMatchAnywhere` 重新部署后端。
+`stage` 三档：不带（Anywhere）/ `ec2`（直接放置）/ `ec2-match`（FlexMatch）。
 
 ## Part 4 — 清理
 

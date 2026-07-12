@@ -12,6 +12,14 @@ export interface GameLiftStackProps extends cdk.StackProps {
   flexMatchTopic: sns.ITopic;
   /** Deploy the managed EC2 fleet too (slow, ~15 min). Off for the Anywhere-only phase. */
   deployEc2Fleet: boolean;
+  /**
+   * When the EC2 fleet is deployed, whether to also create FlexMatch
+   * matchmaking configs for it. Module 4 ("open" placement) leaves this off —
+   * the backend places players into sessions directly with no rules. Module 5
+   * turns it on to introduce rule-based matchmaking. Ignored unless
+   * deployEc2Fleet is true.
+   */
+  ec2Matchmaking: boolean;
   /** Backend API endpoint + results secret passed to server processes as launch params. */
   apiEndpoint: string;
   resultsSecret: string;
@@ -131,12 +139,19 @@ export class GameLiftStack extends cdk.Stack {
         destinations: [{ destinationArn: cdk.Arn.format({ service: 'gamelift', resource: 'fleet', resourceName: ec2Fleet.attrFleetId, region: this.region, account: this.account }, this) }],
         timeoutInSeconds: 60,
       });
-      for (const [size, rs] of ruleSets) {
-        this.matchmakingConfig(`Ec2${size}`, ec2Queue, rs, props.flexMatchTopic);
-      }
 
       new cdk.CfnOutput(this, 'Ec2FleetId', { value: ec2Fleet.attrFleetId });
-      new cdk.CfnOutput(this, 'Ec2MatchmakingConfig', { value: 'PixelRushMatchEc2{1|2|3|4}' });
+      new cdk.CfnOutput(this, 'Ec2QueueName', { value: ec2Queue.name! });
+
+      // Module 5 only: rule-based matchmaking on top of the same fleet/queue.
+      // Module 4 places players directly (no configs), so the backend runs in
+      // "open placement" mode against the queue above.
+      if (props.ec2Matchmaking) {
+        for (const [size, rs] of ruleSets) {
+          this.matchmakingConfig(`Ec2${size}`, ec2Queue, rs, props.flexMatchTopic);
+        }
+        new cdk.CfnOutput(this, 'Ec2MatchmakingConfig', { value: 'PixelRushMatchEc2{1|2|3|4}' });
+      }
     }
 
     new cdk.CfnOutput(this, 'AnywhereFleetId', { value: anywhereFleet.attrFleetId });

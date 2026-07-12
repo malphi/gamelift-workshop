@@ -29,7 +29,7 @@ The `-c stage=ec2` flag extends the stack you already have with three resources:
 |---|---|
 | **Build** | `server/dist/linux/` is zipped, uploaded to S3, registered with GameLift |
 | **Fleet** | GameLift provisions a c5.large, downloads the build, runs `install.sh`, launches your server processes |
-| **Queue** | `PixelRushQueue` — the placement target FlexMatch will use |
+| **Queue** | `PixelRushQueue` — the placement target for sessions (direct in this module, via FlexMatch in Module 5) |
 
 {{% notice info %}}
 This takes **~15 minutes** (instance provisioning + build install + process

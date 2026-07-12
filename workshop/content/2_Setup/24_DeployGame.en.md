@@ -11,20 +11,20 @@ Two CDK stacks — the *web* half of the game, no GameLift yet:
   shop, leaderboard, matchmaking API) and a WebSocket API for notifications
 - **PixelRushFrontendStack** — the Phaser web client on CloudFront + private S3
 
-## 1. Deploy
+## 1. Deploy the backend
 
-From the `infra/` directory:
+From the `infra/` directory, deploy the backend first — the frontend needs its
+WebSocket URL before it can be built:
 
 ```bash
-npx cdk deploy PixelRushBackendStack PixelRushFrontendStack --require-approval never
+npx cdk deploy PixelRushBackendStack --require-approval never
 ```
 
-Takes ~6 minutes. Note two outputs at the end:
+Takes ~4 minutes. Note the two outputs at the end:
 
 ```
 PixelRushBackendStack.ApiUrl      = https://xxxx.execute-api.us-east-1.amazonaws.com
 PixelRushBackendStack.WsNotifyUrl = wss://yyyy.execute-api.us-east-1.amazonaws.com/prod
-PixelRushFrontendStack.SiteUrl    = https://zzzz.cloudfront.net
 ```
 
 {{% notice tip %}}
@@ -32,9 +32,10 @@ Save **ApiUrl** somewhere — you'll paste it into the game in Module 6 to prove
 your deployment works end to end.
 {{% /notice %}}
 
-## 2. Wire the frontend config
+## 2. Build the frontend, then deploy it
 
-Write the WebSocket URL into the frontend config, rebuild, and redeploy the site:
+Write the WebSocket URL into the frontend config, build the site, then deploy
+the frontend stack (which uploads the built site to CloudFront):
 
 ```bash
 echo "{ \"wsNotifyUrl\": \"<PASTE-WsNotifyUrl-HERE>\" }" > ../frontend/public/config.json
@@ -42,13 +43,30 @@ echo "{ \"wsNotifyUrl\": \"<PASTE-WsNotifyUrl-HERE>\" }" > ../frontend/public/co
 npx cdk deploy PixelRushFrontendStack --require-approval never
 ```
 
+Outputs the site URL:
+
+```
+PixelRushFrontendStack.SiteUrl = https://zzzz.cloudfront.net
+```
+
+{{% notice note %}}
+Building before deploying is why we split this into two steps: the frontend
+stack publishes `frontend/dist`, so that folder must exist first. (Deploy the
+frontend before building and CDK warns `frontend/dist not found` and uploads
+an empty site.)
+{{% /notice %}}
+
 ## 3. Checkpoint ★
 
 Open **SiteUrl** in your browser:
 
-1. Enter any racer name + the workshop password `gamelift` → **START ENGINE**
-2. You land in the lobby with a random starter persona (level, coins, a car)
-3. Browse **GARAGE** and **SHOP** — buy a car if you have the coins!
+1. On the login screen, leave the server set to **☁️ AWS ARENA** (the default).
+   On *your own* SiteUrl this means "this site's own backend" — the one you
+   just deployed. (The **🔧 MY SERVER** option is for pointing *someone else's*
+   frontend at your backend; you'll use it in Module 6, not here.)
+2. Enter any racer name + the workshop password `gamelift` → **START ENGINE**
+3. You land in the lobby with a random starter persona (level, coins, a car)
+4. Browse **GARAGE** and **SHOP** — buy a car if you have the coins!
 
 {{% notice info %}}
 Try clicking **RACE → a track → 2P**: matchmaking will spin forever. That's

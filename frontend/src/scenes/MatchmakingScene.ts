@@ -68,8 +68,12 @@ export class MatchmakingScene extends Phaser.Scene {
     try {
       // cached from the lobby warm-up; a cold call resolves in <1s (parallel)
       const latencies = await getLatencies().catch(() => undefined);
-      const { ticketId } = await api.requestMatchmaking(player.playerId, this.trackId, this.matchSize, latencies);
+      const { ticketId, connection } = await api.requestMatchmaking(player.playerId, this.trackId, this.matchSize, latencies);
       this.ticketId = ticketId;
+
+      // Module 4 open placement: the backend already seated us and returned the
+      // connection — jump straight into the race, no polling / SNS push needed.
+      if (connection) { this.startRace(connection); return; }
 
       // Poll as a safety net every 5s in case the push is missed.
       this.pollTimer = this.time.addEvent({

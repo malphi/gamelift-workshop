@@ -29,7 +29,7 @@ npx cdk deploy PixelRushGameLiftStack -c stage=ec2 --require-approval never
 |---|---|
 | **Build** | `server/dist/linux/` 打包上传 S3，注册到 GameLift |
 | **Fleet** | GameLift 开出一台 c5.large，下载 build，执行 `install.sh`，拉起你的服务器进程 |
-| **Queue** | `PixelRushQueue` — FlexMatch 将使用的放置目标 |
+| **Queue** | `PixelRushQueue` — 会话放置目标（本模块直接放置，模块 5 经由 FlexMatch）|
 
 :::alert{type=info}
 这一步需要 **约 15 分钟**（实例开通 + build 安装 + 进程健康检查）。别干等——

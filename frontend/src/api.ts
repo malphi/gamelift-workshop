@@ -120,8 +120,12 @@ export const api = {
     call<{ tracks: TrackInfo[] }>(`/tracks?playerId=${playerId}`),
   leaderboard: (trackId: string) =>
     call<{ entries: LeaderboardEntry[] }>(`/leaderboard?trackId=${trackId}`),
+  // connection is present only in Module 4 "open placement" mode, where the
+  // backend seats the player synchronously; FlexMatch modes return just a
+  // ticketId and push the connection later over the notify WebSocket.
   requestMatchmaking: (playerId: string, trackId: string, matchSize: number, latencies?: Record<string, number>) =>
-    call<{ ticketId: string }>('/matchmaking/request', { method: 'POST', body: JSON.stringify({ playerId, trackId, matchSize, latencies }) }),
+    call<{ ticketId: string; connection?: { ipAddress: string; dnsName: string; port: number; playerSessionId: string } }>(
+      '/matchmaking/request', { method: 'POST', body: JSON.stringify({ playerId, trackId, matchSize, latencies }) }),
   raceReward: (playerId: string, position: number) =>
     call<{ coinsAwarded: number; coins?: number }>('/race-reward', { method: 'POST', body: JSON.stringify({ playerId, position }) }),
   matchStatus: (ticketId: string) =>

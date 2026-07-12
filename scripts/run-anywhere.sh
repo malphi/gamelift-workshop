@@ -32,6 +32,10 @@ AUTH_TOKEN=$(aws gamelift get-compute-auth-token --region "$REGION" \
   --fleet-id "$FLEET_ID" --compute-name "$COMPUTE_NAME" \
   --query "AuthToken" --output text)
 
+# Anywhere is for validating the integration, not production play: the server
+# runs plain ws:// and you confirm GameLift orchestration in the console
+# (compute registered, session created). Real multiplayer racing is Module 4's
+# managed fleet, which gets a trusted GameLift TLS cert for wss://.
 echo "starting server (auth token valid ~15 min)..."
 cd server
 exec go run . \

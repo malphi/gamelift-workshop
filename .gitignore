@@ -5,6 +5,7 @@ node_modules/
 frontend/dist/
 server/dist/
 infra/cdk.out/
+workshop/public/
 *.tsbuildinfo
 
 # --- CDK / AWS local state ---

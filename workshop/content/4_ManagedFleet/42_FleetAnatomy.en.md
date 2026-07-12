@@ -56,10 +56,15 @@ const ec2Queue = new gamelift.CfnGameSessionQueue(this, 'Ec2Queue', {
 });
 ```
 
-Nothing asks a fleet directly for a session. Requests go to a **queue**, which
-scans its destinations (fleets/aliases, possibly across regions) and places the
-session on the best one. Today the queue has one destination; the optional
-appendix adds Tokyo and Singapore — *without touching the game code*.
+A **queue** scans its destinations (fleets/aliases, possibly across regions)
+and places the session on the best one. Today the queue has one destination;
+the optional appendix adds Tokyo and Singapore — *without touching the game
+code*.
+
+In this module the backend places sessions **directly** on this fleet
+(`CreateGameSession` / `CreatePlayerSession`) with no rules — the simplest way
+to get two players into the same race. In Module 5, FlexMatch will sit in front
+of this same queue and decide *who* shares a session.
 
 ## Fleet lifecycle states
 

@@ -120,9 +120,20 @@ Resources:
           #!/bin/bash
           set -euxo pipefail
           exec > /var/log/workshop-init.log 2>&1
+          # cloud-init runs UserData without HOME; the code-server install
+          # script dereferences $HOME and set -u would kill the whole script
+          export HOME=/root
 
-          dnf install -y git golang docker
+          dnf install -y git docker
           systemctl enable --now docker
+
+          # Go from go.dev, not the distro repo — the game server's go.mod
+          # requires a newer toolchain than Amazon Linux ships (needs >= 1.26.2)
+          GO_VERSION=1.26.2
+          curl -fsSL https://go.dev/dl/go$GO_VERSION.linux-amd64.tar.gz -o /tmp/go.tar.gz
+          tar -C /usr/local -xzf /tmp/go.tar.gz
+          ln -sf /usr/local/go/bin/go /usr/local/bin/go
+          ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
 
           # Node 20
           curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
@@ -147,11 +158,14 @@ Resources:
           CFG
           chown -R workshop:workshop /home/workshop/.config
 
-          # pre-clone the workshop repo + install dependencies
+          # pre-clone the workshop repo + install dependencies. Drop the
+          # tutorial-authoring dirs (workshop/, workshop-studio/) — participants
+          # read the tutorial on the Workshop Studio site, not in the checkout.
           sudo -u workshop bash -c '
             cd /home/workshop
             git clone ${RepoUrl} gamelift-workshop || true
             cd gamelift-workshop
+            rm -rf workshop workshop-studio
             (cd infra && npm install) || true
             (cd backend && npm install) || true
             (cd frontend && npm install) || true
@@ -191,9 +205,12 @@ Resources:
           TargetOriginId: code-server
           ViewerProtocolPolicy: redirect-to-https
           AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
-          # managed policies: CachingDisabled / AllViewerExceptHostHeader
+          # managed policies: CachingDisabled + AllViewer. AllViewer (not
+          # ...ExceptHostHeader) forwards the viewer Host header so code-server
+          # sees Host == Origin == the cloudfront domain; otherwise its
+          # WebSocket CSRF check rejects the connection (close code 1006).
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
-          OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+          OriginRequestPolicyId: 216adef6-5c7f-47e4-b989-5492eafa07d3
         Origins:
           - Id: code-server
             DomainName: !GetAtt DevInstance.PublicDnsName

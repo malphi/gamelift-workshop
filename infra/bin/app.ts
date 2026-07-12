@@ -12,9 +12,26 @@ const app = new cdk.App();
 const resultsSecret = app.node.tryGetContext('resultsSecret') ?? 'pixelrush-workshop-secret';
 const originVerifySecret = app.node.tryGetContext('originVerifySecret') ?? 'pixelrush-origin-verify';
 
+// Deployment stage drives how players reach a game server:
+//   (unset)   Module 3 — Anywhere fleet only
+//   ec2       Module 4 — managed EC2 fleet, OPEN placement (no matchmaking rules)
+//   ec2-match Module 5 — managed EC2 fleet, FlexMatch rule-based matchmaking
+const stage = app.node.tryGetContext('stage');
+const deployEc2Fleet = stage === 'ec2' || stage === 'ec2-match';
+const ec2Matchmaking = stage === 'ec2-match';
+
+// Module 4 (stage=ec2) places players directly into the EC2 queue with no
+// rules; everything else uses FlexMatch (Anywhere configs, or EC2 configs at
+// stage=ec2-match).
+const placementMode = stage === 'ec2' ? 'open' : 'flexmatch';
+const matchmakingConfigPrefix = ec2Matchmaking ? 'PixelRushMatchEc2' : 'PixelRushMatchAnywhere';
+
 const backend = new BackendStack(app, 'PixelRushBackendStack', {
   resultsSecret,
   originVerifySecret,
+  placementMode,
+  matchmakingConfigPrefix,
+  openPlacementFleet: 'PixelRushFleet', // EC2 fleet name (created at stage=ec2/ec2-match)
   description: 'Pixel Rush workshop: player data, shop, leaderboard, matchmaking APIs',
 });
 
@@ -26,7 +43,8 @@ new FrontendStack(app, 'PixelRushFrontendStack', {
 
 new GameLiftStack(app, 'PixelRushGameLiftStack', {
   flexMatchTopic: backend.flexMatchTopic,
-  deployEc2Fleet: app.node.tryGetContext('stage') === 'ec2',
+  deployEc2Fleet,
+  ec2Matchmaking,
   apiEndpoint: backend.httpApi.apiEndpoint,
   resultsSecret,
   description: 'Pixel Rush workshop: GameLift fleets, queues, FlexMatch',

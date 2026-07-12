@@ -53,9 +53,12 @@ const ec2Queue = new gamelift.CfnGameSessionQueue(this, 'Ec2Queue', {
 });
 ```
 
-没有人直接向 fleet 要会话。请求都发给 **queue**，由它扫描目的地列表
-（fleet/别名，可跨区域）并把会话放到最合适的那个。今天队列只有一个目的地；
-可选附录会加入东京和新加坡——*完全不用改游戏代码*。
+**queue** 扫描目的地列表（fleet/别名，可跨区域）并把会话放到最合适的那个。
+今天队列只有一个目的地；可选附录会加入东京和新加坡——*完全不用改游戏代码*。
+
+本模块后端**直接**在这个 fleet 上放置会话（`CreateGameSession` /
+`CreatePlayerSession`），没有任何规则——这是让两个玩家进入同一局最简单的方式。
+到模块 5，FlexMatch 会挡在这同一个 queue 前面，决定*谁*和*谁*共享一局。
 
 ## Fleet 生命周期状态
 
