@@ -40,7 +40,10 @@ export const handler = withOriginVerify(async (event: APIGatewayProxyEventV2): P
   const profile: PlayerProfile = {
     playerId,
     name,
-    level: tpl.Item.level,
+    // Everyone starts at level 1 so any two new players match immediately
+    // (FlexMatch SimilarLevel allows a gap of 3). Car and coins stay random
+    // from the template for variety.
+    level: 1,
     coins: tpl.Item.coins,
     titles: [...tpl.Item.titles],
     ownedCars: [...tpl.Item.ownedCars],

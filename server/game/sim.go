@@ -146,8 +146,43 @@ func (s *Sim) Step(racing bool) {
 		}
 		s.stepCar(c)
 	}
+	s.carCollisions()
 	s.stepBombs()
 	s.rankCars()
+}
+
+// carCollisions bumps cars that overlap in the same lane: the trailing car
+// (smaller D) crashes and is pushed back to just behind the leader, so racers
+// can't drive through each other. Runs after every car has moved this tick.
+func (s *Sim) carCollisions() {
+	cars := make([]*Car, 0, len(s.Cars))
+	for _, c := range s.Cars {
+		if !c.Finished {
+			cars = append(cars, c)
+		}
+	}
+	for i := 0; i < len(cars); i++ {
+		for j := i + 1; j < len(cars); j++ {
+			a, b := cars[i], cars[j]
+			if math.Abs(a.LaneF-b.LaneF) > laneTolerance {
+				continue
+			}
+			if math.Abs(a.D-b.D) >= 2*carHalfLen {
+				continue
+			}
+			// rear car (smaller D) is the one that "hit"; leader is unaffected
+			rear, lead := a, b
+			if a.D > b.D {
+				rear, lead = b, a
+			}
+			if rear.SlowT > 0 {
+				continue // already recovering from a hit
+			}
+			rear.SlowT = crashRecovery
+			rear.D = lead.D - 2*carHalfLen // sit right behind the leader
+			s.Events = append(s.Events, EventMsg{T: "event", Kind: "crash", Slot: rear.Slot, Data: "car"})
+		}
+	}
 }
 
 func (s *Sim) stepCar(c *Car) {
