@@ -17,23 +17,20 @@ distance can't be optimized away; the server must move closer.
 ## Part 1 — add locations to the fleet
 
 A managed fleet can span multiple regions as **locations** — same build, same
-runtime config, instances everywhere. Open `infra/lib/gamelift-stack.ts`, find
-the `locations:` array in the `Ec2Fleet` definition, and extend it:
-
-```typescript
-locations: [
-  { location: this.region,        locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } },
-  { location: 'ap-northeast-1',   locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } }, // Tokyo
-  { location: 'ap-southeast-1',   locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } }, // Singapore
-],
-```
-
-Deploy (activating remote locations takes ~15 minutes):
+runtime config, instances everywhere. By default the fleet runs a single
+location (your deploy region); add more with the `extraRegions` context flag —
+no code change. Look at how the fleet consumes it in
+`infra/lib/gamelift-stack.ts` (the `extraRegions` variable and the
+`locations:` array), then deploy with Tokyo + Singapore added:
 
 ```bash
 cd infra
-npx cdk deploy PixelRushGameLiftStack -c stage=ec2 --require-approval never
+npx cdk deploy PixelRushGameLiftStack -c stage=ec2-match \
+  -c extraRegions=ap-northeast-1,ap-southeast-1 --require-approval never
 ```
+
+Activating the remote locations takes ~15 minutes. Each extra location runs its
+own c5.large.
 
 ## Part 2 — how placement picks a region
 

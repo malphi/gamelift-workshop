@@ -245,7 +245,12 @@ func (r *Room) handleJoin(p *Player, j *JoinMsg) {
 	r.broadcast(Marshal(RosterMsg{T: "roster", Players: r.roster()}))
 	log.Printf("player %s (%s) joined slot %d [%d/%d expected]", j.Name, j.PlayerID, slot, r.connectedCount(), len(r.expected))
 
-	if r.state == StateWaiting && r.allExpectedConnected() {
+	// Start as soon as the roster is complete. FlexMatch: all expected players
+	// connected. Open placement (no expected roster): the grid target is full
+	// of humans — no point waiting out the timer for bots.
+	full := r.allExpectedConnected() ||
+		(len(r.expected) == 0 && r.gridTarget > 0 && r.connectedCount() >= r.gridTarget)
+	if r.state == StateWaiting && full {
 		r.startCountdown()
 	}
 }

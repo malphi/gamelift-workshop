@@ -100,6 +100,11 @@ func (m *Manager) onStartGameSession(gs model.GameSession) {
 	if trackID == "" {
 		trackID = "track-1"
 	}
+	// No matchmaker data => this session was created by direct placement
+	// (Module 4 "open" mode), so there is no pre-agreed roster. Accept any
+	// player whose PlayerSession validates, assigning free slots on arrival.
+	// FlexMatch sessions keep the fixed expected roster (openForJoins=false).
+	openForJoins := len(expected) == 0
 
 	cb := m.NewRoomCallbacks()
 	cb.AcceptPlayer = func(psid string) error { return server.AcceptPlayerSession(psid) }
@@ -121,7 +126,7 @@ func (m *Manager) onStartGameSession(gs model.GameSession) {
 		os.Exit(0)
 	}
 
-	room, err := game.NewRoom(trackID, expected, false, cb)
+	room, err := game.NewRoom(trackID, expected, openForJoins, cb)
 	if err != nil {
 		log.Printf("create room failed: %v", err)
 		_ = server.ProcessEnding()

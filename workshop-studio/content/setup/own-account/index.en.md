@@ -26,7 +26,7 @@ Pick a GameLift-supported region; this workshop assumes **us-east-1**.
 | Tool | Version | Check |
 |---|---|---|
 | Node.js | 20+ | `node --version` |
-| Go | 1.22+ | `go version` |
+| Go | 1.26.2+ | `go version` |
 | AWS CLI | v2 | `aws --version` |
 | AWS CDK | v2 | `npx cdk --version` (no install needed — `npx` fetches it) |
 

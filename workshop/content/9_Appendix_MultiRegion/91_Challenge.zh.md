@@ -16,23 +16,18 @@ weight: 91
 ## 第 1 步——给 fleet 添加 location
 
 托管 fleet 可以以 **location** 的形式跨多个区域——同一 build、同一运行时配置，
-实例遍布各地。打开 `infra/lib/gamelift-stack.ts`，找到 `Ec2Fleet` 定义中的
-`locations:` 数组并扩展：
-
-```typescript
-locations: [
-  { location: this.region,        locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } },
-  { location: 'ap-northeast-1',   locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } }, // 东京
-  { location: 'ap-southeast-1',   locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } }, // 新加坡
-],
-```
-
-部署（远程 location 激活约需 15 分钟）：
+实例遍布各地。默认 fleet 只运行单个 location（你的部署区域）；用 `extraRegions`
+context 参数添加更多，无需改代码。可以看看 `infra/lib/gamelift-stack.ts` 里
+fleet 如何消费它（`extraRegions` 变量和 `locations:` 数组），然后部署时加上
+东京 + 新加坡：
 
 ```bash
 cd infra
-npx cdk deploy PixelRushGameLiftStack -c stage=ec2 --require-approval never
+npx cdk deploy PixelRushGameLiftStack -c stage=ec2-match \
+  -c extraRegions=ap-northeast-1,ap-southeast-1 --require-approval never
 ```
+
+远程 location 激活约需 15 分钟。每个额外 location 各自运行一台 c5.large。
 
 ## 第 2 步——放置如何选区域
 

@@ -53,18 +53,9 @@ PixelRushAnywhereFleet → Computes** tab:
 
 You've registered your own hardware as GameLift fleet compute: GameLift now
 knows this machine exists, is healthy (`ProcessReady` + heartbeats), and can be
-handed game sessions.
-
-{{% notice info %}}
-**Why we stop at registration.** GameLift orchestration genuinely works on
-Anywhere — you can watch it: request a **2P** race from two browser tabs and
-your server terminal logs `OnStartGameSession` → `game session active`. But an
-Anywhere machine has no trusted TLS certificate, and browsers refuse a secure
-`wss://` connection to an untrusted host, so players can't actually complete
-the join. That's by design: Anywhere is for **fast local iteration and
-validating the SDK integration**, not production play. Real multiplayer racing
-comes in Module 4, on a managed fleet with a GameLift-issued certificate.
-{{% /notice %}}
+handed game sessions. Anywhere is for **fast local iteration and validating the
+SDK integration** — real multiplayer racing comes in Module 4, on a managed
+fleet.
 
 {{% notice warning %}}
 The auth token expires after ~15 minutes of idling. If the server exits later,

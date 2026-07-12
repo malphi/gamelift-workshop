@@ -35,6 +35,11 @@ export class GameLiftStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: GameLiftStackProps) {
     super(scope, id, props);
 
+    // Extra managed-fleet regions beyond the deploy region (multi-region
+    // appendix). e.g. `-c extraRegions=ap-northeast-1,ap-southeast-1`.
+    const extraRegions = (this.node.tryGetContext('extraRegions') as string | undefined)
+      ?.split(',').map((r) => r.trim()).filter(Boolean) ?? [];
+
     // One ruleset per match size. Size 1 = Quick Start (matches instantly,
     // server fills the grid with NPC drivers); 2/4/8 = multiplayer sizes.
     const ruleSets = new Map<number, gamelift.CfnMatchmakingRuleSet>();
@@ -117,13 +122,15 @@ export class GameLiftStack extends cdk.Stack {
           { fromPort: 8443, toPort: 8443, ipRange: '0.0.0.0/0', protocol: 'UDP' },
           { fromPort: 2083, toPort: 2083, ipRange: '0.0.0.0/0', protocol: 'UDP' },
         ],
-        // Multi-region: the queue places each match in the location with the
-        // best latency for its players (clients report LatencyInMs). Tokyo
-        // and Singapore serve Asia players (~80ms vs ~250ms cross-Pacific).
+        // Single region by default (fast, cheap). The optional multi-region
+        // appendix adds locations via `-c extraRegions=ap-northeast-1,ap-southeast-1`;
+        // the queue then places each match in the lowest-latency location for
+        // its players (clients report LatencyInMs).
         locations: [
           { location: this.region, locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } },
-          { location: 'ap-northeast-1', locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } },
-          { location: 'ap-southeast-1', locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 } },
+          ...extraRegions.map((r) => ({
+            location: r, locationCapacity: { desiredEc2Instances: 1, minSize: 1, maxSize: 2 },
+          })),
         ],
         runtimeConfiguration: {
           gameSessionActivationTimeoutSeconds: 300,
