@@ -22,6 +22,11 @@
         "ssm:ResumeSession",
         "ssm:DescribeSessions",
         "ssm:GetConnectionStatus",
+        "ssm:PutParameter",
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:DeleteParameter",
+        "ssm:AddTagsToResource",
         "ecr:*",
         "sts:GetCallerIdentity"
       ],
