@@ -53,6 +53,12 @@ PixelRushFrontendStack.SiteUrl = https://zzzz.cloudfront.net
 并上传一个空站点。）
 {{% /notice %}}
 
+{{% notice warning %}}
+CloudFront 是全球 CDN——新分发要 **5–10 分钟**才能部署到所有边缘节点。部署命令
+刚返回时，打开 **SiteUrl** 可能短暂看到报错或旧缓存页面。若如此，等几分钟再刷新
+（强制刷新 ⌘/Ctrl-Shift-R 更有效）。
+{{% /notice %}}
+
 ## 3. 检查点 ★
 
 在浏览器打开 **SiteUrl**：

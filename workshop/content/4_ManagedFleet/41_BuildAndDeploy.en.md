@@ -5,9 +5,11 @@ weight: 41
 
 ## 1. Cross-compile the server for the fleet
 
-Fleet instances run Amazon Linux 2023 on x86_64. Go cross-compiles in one command:
+Fleet instances run Amazon Linux 2023 on x86_64. From the repository root, Go
+cross-compiles in one command:
 
 ```bash
+cd ~/gamelift-workshop
 ./scripts/build-server-linux.sh
 ```
 
@@ -15,6 +17,19 @@ The script produces `server/dist/linux/` containing:
 
 - `pixelrush-server` — the Linux binary (statically linked, ~8 MB)
 - `install.sh` — runs once per instance at deploy time (permissions, log dir)
+
+Confirm the binary was produced before deploying:
+
+```bash
+ls -lh server/dist/linux/
+```
+
+Expected — both files present:
+
+```
+install.sh
+pixelrush-server
+```
 
 ## 2. Deploy the fleet
 

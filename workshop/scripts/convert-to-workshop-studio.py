@@ -175,6 +175,10 @@ def main() -> None:
     ws_readme = SRC / "workshop-studio-README.md"
     if ws_readme.exists():
         shutil.copy(ws_readme, DST / "README.md")
+    # Workshop Studio requires a LICENSE when code is present; reuse the repo's.
+    repo_license = SRC.parent / "LICENSE"
+    if repo_license.exists():
+        shutil.copy(repo_license, DST / "LICENSE")
 
     print(f"converted {len(pages)} pages -> {DST}")
 

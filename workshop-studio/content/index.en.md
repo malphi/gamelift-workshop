@@ -55,6 +55,31 @@ to deploy — **you will read key parts of it, but you never need to modify code
 Every step is a copy-paste command or an AWS console observation.
 :::
 
+## Who this is for
+
+Developers, solutions architects, and technical game builders who want a
+hands-on introduction to hosting real-time multiplayer games on AWS. You do
+**not** need prior game-development or GameLift experience — the game is built
+for you.
+
+## Prerequisites
+
+- Basic familiarity with the **AWS console** and a **command line / terminal**
+- Comfort reading **TypeScript / Go** at a glance (you read code, never write it)
+- One of:
+  - **AWS-hosted event**: nothing to install — a browser IDE is provided
+  - **Your own AWS account**: an account with admin access, plus Node 20+,
+    Go 1.26.2+, AWS CLI v2, and AWS CDK v2 (see *2. Setup → Own Account*)
+
+## Cost
+
+Running this workshop in your own account costs roughly **$0.20–0.50/hour**
+(mainly one or two `c5.large` GameLift instances), well under **$1** for a
+2-hour sitting **if you complete the cleanup module**. See
+[Amazon GameLift pricing](https://aws.amazon.com/gamelift/pricing/) and
+[EC2 pricing](https://aws.amazon.com/ec2/pricing/) for details. AWS-hosted
+events run in a provided temporary account at no cost to you.
+
 ## Agenda
 
 | Module                                                | Duration |

@@ -5,9 +5,10 @@ weight: 41
 
 ## 1. 为 fleet 交叉编译服务器
 
-Fleet 实例运行 x86_64 的 Amazon Linux 2023。Go 一条命令即可交叉编译：
+Fleet 实例运行 x86_64 的 Amazon Linux 2023。在仓库根目录下，Go 一条命令即可交叉编译：
 
 ```bash
+cd ~/gamelift-workshop
 ./scripts/build-server-linux.sh
 ```
 
@@ -15,6 +16,19 @@ Fleet 实例运行 x86_64 的 Amazon Linux 2023。Go 一条命令即可交叉编
 
 - `pixelrush-server` — Linux 二进制（静态链接，约 8 MB）
 - `install.sh` — 部署时在每台实例上执行一次（设置权限、日志目录）
+
+部署前确认二进制已生成：
+
+```bash
+ls -lh server/dist/linux/
+```
+
+预期——两个文件都在：
+
+```
+install.sh
+pixelrush-server
+```
 
 ## 2. 部署 fleet
 

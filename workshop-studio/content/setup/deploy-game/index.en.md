@@ -56,6 +56,13 @@ frontend before building and CDK warns `frontend/dist not found` and uploads
 an empty site.)
 :::
 
+:::alert{type=warning}
+CloudFront is a global CDN — a new distribution takes **5–10 minutes** to fully
+deploy to every edge location. Right after the deploy returns, opening
+**SiteUrl** may briefly show an error or an old cached page. If so, wait a few
+minutes and refresh (a hard refresh, ⌘/Ctrl-Shift-R, helps).
+:::
+
 ## 3. Checkpoint ★
 
 Open **SiteUrl** in your browser:

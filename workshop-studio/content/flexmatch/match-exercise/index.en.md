@@ -49,8 +49,8 @@ The difference from Module 4 is what happens when players *don't* match:
   size, track, and their measured region latencies.
 
 Console → **GameLift → Fleets → PixelRushFleet → Game sessions**: your session
-is `ACTIVE` with two player sessions. Click in to see the exact IP:port and each
-PlayerSessionId.
+is `ACTIVE` with two player sessions. Click in to see the exact IP and port, and
+each PlayerSessionId.
 
 ## Checkpoint ★
 
