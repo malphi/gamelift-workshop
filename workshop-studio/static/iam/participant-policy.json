@@ -2,59 +2,86 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "WorkshopServices",
+      "Sid": "DriveCloudFormation",
       "Effect": "Allow",
-      "Action": [
-        "gamelift:*",
-        "cloudformation:*",
-        "s3:*",
-        "lambda:*",
-        "apigateway:*",
-        "dynamodb:*",
-        "sns:*",
-        "cloudfront:*",
-        "logs:*",
-        "cloudwatch:*",
-        "ec2:Describe*",
-        "ec2:GetConsole*",
-        "ssm:StartSession",
-        "ssm:TerminateSession",
-        "ssm:ResumeSession",
-        "ssm:DescribeSessions",
-        "ssm:GetConnectionStatus",
-        "ssm:PutParameter",
-        "ssm:GetParameter",
-        "ssm:GetParameters",
-        "ssm:DeleteParameter",
-        "ssm:AddTagsToResource",
-        "ecr:*",
-        "sts:GetCallerIdentity"
+      "Action": "cloudformation:*",
+      "Resource": [
+        "arn:aws:cloudformation:*:*:stack/PixelRush*/*",
+        "arn:aws:cloudformation:*:*:stack/CDKToolkit/*"
       ],
-      "Resource": "*",
       "Condition": {
         "StringEquals": {
-          "aws:RequestedRegion": [
-            "us-east-1",
-            "us-west-2",
-            "ap-northeast-1",
-            "ap-southeast-1"
-          ]
+          "aws:RequestedRegion": ["us-east-1", "us-west-2", "ap-northeast-1", "ap-southeast-1"]
         }
       }
     },
     {
-      "Sid": "CdkBootstrapRoles",
+      "Sid": "CdkAssetBuckets",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::cdk-*",
+        "arn:aws:s3:::cdk-*/*",
+        "arn:aws:s3:::pixelrush*",
+        "arn:aws:s3:::pixelrush*/*"
+      ]
+    },
+    {
+      "Sid": "GameLiftComputeCalls",
+      "Effect": "Allow",
+      "Action": [
+        "gamelift:RegisterCompute",
+        "gamelift:DeregisterCompute",
+        "gamelift:GetComputeAuthToken"
+      ],
+      "Resource": "arn:aws:gamelift:*:*:fleet/*"
+    },
+    {
+      "Sid": "CdkBootstrapSsmParams",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:PutParameter",
+        "ssm:DeleteParameter",
+        "ssm:AddTagsToResource"
+      ],
+      "Resource": "arn:aws:ssm:*:*:parameter/cdk-bootstrap/*"
+    },
+    {
+      "Sid": "CdkBootstrapEcr",
+      "Effect": "Allow",
+      "Action": "ecr:*",
+      "Resource": "arn:aws:ecr:*:*:repository/cdk-*"
+    },
+    {
+      "Sid": "SsmSessionStart",
+      "Effect": "Allow",
+      "Action": "ssm:StartSession",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ssm:*:*:document/AWS-StartSSHSession",
+        "arn:aws:ssm:*:*:document/SSM-SessionManagerRunShell"
+      ]
+    },
+    {
+      "Sid": "SsmSessionManage",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:TerminateSession",
+        "ssm:ResumeSession"
+      ],
+      "Resource": "arn:aws:ssm:*:*:session/*"
+    },
+    {
+      "Sid": "CdkStackRoles",
       "Effect": "Allow",
       "Action": [
         "iam:CreateRole",
         "iam:DeleteRole",
-        "iam:GetRole",
         "iam:TagRole",
         "iam:AttachRolePolicy",
         "iam:DetachRolePolicy",
         "iam:PutRolePolicy",
-        "iam:DeleteRolePolicy",
-        "iam:GetRolePolicy"
+        "iam:DeleteRolePolicy"
       ],
       "Resource": [
         "arn:aws:iam::*:role/cdk-*",
@@ -81,28 +108,59 @@
       }
     },
     {
-      "Sid": "CdkDeployViaBootstrapRoles",
+      "Sid": "AssumeCdkBootstrapRoles",
       "Effect": "Allow",
       "Action": "sts:AssumeRole",
       "Resource": "arn:aws:iam::*:role/cdk-*"
     },
     {
-      "Sid": "IamRead",
+      "Sid": "ReadOnlyAcrossWorkshopServices",
       "Effect": "Allow",
       "Action": [
+        "cloudformation:Describe*",
+        "cloudformation:List*",
+        "cloudformation:Get*",
+        "cloudformation:ValidateTemplate",
+        "gamelift:Describe*",
+        "gamelift:List*",
+        "lambda:Get*",
+        "lambda:List*",
+        "dynamodb:Describe*",
+        "dynamodb:List*",
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "apigateway:GET",
+        "sns:Get*",
+        "sns:List*",
+        "cloudfront:Get*",
+        "cloudfront:List*",
+        "logs:Describe*",
+        "logs:Get*",
+        "logs:FilterLogEvents",
+        "cloudwatch:Describe*",
+        "cloudwatch:Get*",
+        "cloudwatch:List*",
+        "ec2:Describe*",
+        "ec2:GetConsole*",
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:DescribeSessions",
+        "ssm:GetConnectionStatus",
+        "ecr:Describe*",
+        "ecr:List*",
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "s3:List*",
+        "s3:GetBucketLocation",
         "iam:List*",
-        "iam:Get*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "ConsoleHomeWidgets",
-      "Effect": "Allow",
-      "Action": [
+        "iam:Get*",
         "servicecatalog:ListApplications",
         "servicecatalog:GetApplication",
         "resource-groups:ListGroups",
-        "tag:GetResources"
+        "tag:GetResources",
+        "sts:GetCallerIdentity"
       ],
       "Resource": "*"
     }

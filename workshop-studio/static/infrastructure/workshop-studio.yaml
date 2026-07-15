@@ -159,7 +159,7 @@ Resources:
       IamInstanceProfile: !Ref DevInstanceProfile
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
-          Ebs: { VolumeSize: !Ref VolumeSizeGb, VolumeType: gp3 }
+          Ebs: { VolumeSize: !Ref VolumeSizeGb, VolumeType: gp3, Encrypted: true }
       Tags: [{ Key: Name, Value: gamelift-workshop-dev }]
       UserData:
         Fn::Base64: !Sub |

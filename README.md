@@ -1,164 +1,186 @@
-# Pixel Rush — Amazon GameLift 多人赛车 Workshop
+> 中文版：[README_CN.md](README_CN.md)
 
-一款俯视角像素赛车游戏（玩法致敬 FC 经典《公路格斗者 / Road Fighter》），
-用浏览器客户端演示 **Amazon GameLift Servers** 托管与 **FlexMatch** 匹配的完整链路。
-支持单人 NPC 练习赛和 2/3/4 人多人对战。
+# Pixel Rush — Amazon GameLift Multiplayer Racing Workshop
+
+A top-down pixel racing game (gameplay inspired by the FC classic *Road Fighter*)
+that demonstrates the full pipeline of **Amazon GameLift Servers** hosting and
+**FlexMatch** matchmaking through a browser client. Supports solo practice
+against NPCs and 2/3/4-player multiplayer races.
 
 ```
-浏览器 (Phaser 3, CloudFront 分发)
- ├── /api/* ──► CloudFront ──► API Gateway + Lambda + DynamoDB   登录/车库/商店/赛道/排行榜
- ├── wss:// ──► API Gateway WebSocket API                        匹配结果推送 + 世界频道聊天
- └── wss:// + WebRTC(UDP) ──► GameLift fleet 上的 Go 游戏服务器   实时对战 @ 20Hz
+Browser (Phaser 3, served by CloudFront)
+ ├── /api/* ──► CloudFront ──► API Gateway + Lambda + DynamoDB   login / garage / shop / tracks / leaderboard
+ ├── wss:// ──► API Gateway WebSocket API                        match-result push + world chat
+ └── wss:// + WebRTC(UDP) ──► Go game server on a GameLift fleet  real-time racing @ 20Hz
 
-FlexMatch ──► SNS ──► Lambda ──► WebSocket 推送给等待中的玩家（附 debug 播报）
-游戏服务器 ──► POST /internal/results (共享密钥) ──► 金币/解锁/排行榜结算
+FlexMatch ──► SNS ──► Lambda ──► WebSocket push to waiting players (with debug traces)
+Game server ──► POST /internal/results (shared secret) ──► coins / unlocks / leaderboard settlement
 ```
 
-**安全设计**：CloudFront 是唯一公开入口——S3 站点桶私有（OAC），HTTP API 拒绝
-未携带 `x-origin-verify` 的请求，EC2 fleet 只开放两个游戏端口且使用 GameLift
-生成的 TLS 证书（`wss://`）。
+**Security by design**: CloudFront is the only public entry point — the S3 site
+bucket is private (OAC), the HTTP API rejects requests without the
+`x-origin-verify` header, and the EC2 fleet opens only two game ports and uses a
+GameLift-generated TLS certificate (`wss://`).
 
-## 目录结构
+## Directory structure
 
-| 目录 | 内容 |
+| Directory | Contents |
 |---|---|
-| `server/` | Go 游戏服务器 — GameLift Server SDK v5、20Hz 权威模拟、WebSocket + WebRTC 传输 |
-| `backend/` | TypeScript Lambda — 登录（8 个种子角色）、车库、商店、赛道、排行榜、FlexMatch 管道 |
-| `frontend/` | Phaser 3 + Vite 浏览器客户端 — 大厅场景 + 比赛渲染（快照插值 + 本地预测） |
-| `infra/` | CDK 三个 stack — Backend（API/DDB/SNS/WS）、Frontend（CloudFront+S3）、GameLift（fleet/queue/FlexMatch） |
-| `scripts/` | 构建/运行/测试脚本（`gen-track.mjs` 由种子确定性生成赛道 JSON） |
+| `server/` | Go game server — GameLift Server SDK v5, 20Hz authoritative simulation, WebSocket + WebRTC transport |
+| `backend/` | TypeScript Lambda — login (8 seeded personas), garage, shop, tracks, leaderboard, FlexMatch pipeline |
+| `frontend/` | Phaser 3 + Vite browser client — lobby scenes + race rendering (snapshot interpolation + local prediction) |
+| `infra/` | CDK stacks — Backend (API/DDB/SNS/WS), Frontend (CloudFront+S3), GameLift (fleet/queue/FlexMatch), Docs (self-hosted tutorial site) |
+| `scripts/` | Build / run / test scripts (`gen-track.mjs` deterministically generates track JSON from a seed) |
+| `workshop/` | Tutorial content source (Hugo, bilingual `*.en.md` / `*.zh.md`) + `static/` (images, participant IAM policy, Workshop Studio CFN template); generates the directory below via `scripts/convert-to-workshop-studio.py` |
+| `workshop-studio/` | **AWS Workshop Studio native format** generated from `workshop/` (`contentspec.yaml` + `content/<slug>/index.{en,zh-CN}.md`); this is what gets published to catalog.workshops.aws |
 
-## 玩法速览
+## Gameplay at a glance
 
-- **操作**：左/右方向键（或 A/D）点按变道，**空格**使用道具；车辆自动前进
-- **道具**：道具箱随机给**氮气**（提速 ×1.4 持续 10 秒）或**炸弹**（丢在身后，命中眩晕 1.2 秒），箱子 8 秒刷新
-- **赛道**：4 条难度递增（滚动速度 300→570），完成前一条解锁下一条
-- **模式**：⚡ Quick Start（纯前端本地模拟对战 1 个 NPC，秒开）；2P/3P/4P 多人（FlexMatch 匹配，45 秒凑不齐用 NPC 补位）
-- **经济**：多人按名次得 200/120/80/50 金币，练习赛 40/25/…（服务端限流防刷）；金币购车（真实车型：卡罗拉→布加迪威龙，价格按真实比例 1:100）
-- **登录**：统一密码 `gamelift`；用户名唯一，重名直接取回原角色；Cookie 记住会话
-- **多 Arena**：登录页可选 ☁️ AWS ARENA（官方服务器）或 🔧 MY SERVER（粘贴学员自己 BackendStack 的 `ApiUrl`，前端通过 `/api/info` 自动发现其余配置）
+- **Controls**: left/right arrows (or A/D) to tap-change lanes, **space** to use an item; the car auto-advances
+- **Items**: item boxes randomly grant **nitro** (×1.4 speed for 3 s) or a **bomb** (dropped behind you, stuns on hit for 1.2 s); boxes respawn after a few seconds
+- **Tracks**: 4 tracks of increasing difficulty (scroll speed 300→570); completing one unlocks the next
+- **Modes**: ⚡ Quick Start (pure front-end local sim vs. 1 NPC, instant); 2P/3P/4P multiplayer (FlexMatch; NPCs top up the grid if the field isn't full after 45 s)
+- **Economy**: multiplayer awards 200/120/80/50 coins by finishing position, practice 40/25/… (server-side rate-limited to prevent farming); coins buy cars (real models: Corolla → Bugatti Veyron, priced at a real-world 1:100 ratio)
+- **Login**: shared password `gamelift`; usernames are unique — the same name reclaims the same persona; a cookie remembers the session
+- **Multi-arena**: the login page offers ☁️ AWS ARENA (the official server) or 🔧 MY SERVER (paste your own BackendStack `ApiUrl`; the front end auto-discovers the rest via `/api/info`)
 
-## 网络优化（实战踩坑后的设计）
+## Network optimizations (designed from real-world pain)
 
-这部分是本 workshop 的独特价值——真实跨网络对战暴露的问题与解法：
+This is the workshop's unique value — the problems real cross-network play exposes, and the fixes:
 
-1. **端口选择**：游戏端口用 **8443 + 2083**（HTTPS 类端口）。实测用户网络普遍封锁
-   7777/1935 等"游戏味"端口（症状：一方永远卡在 connecting）；GameLift 禁止 ≤1025 端口，真 443 不可用。
-2. **UDP 传输（WebRTC DataChannel）**：状态快照和输入走**不可靠 DataChannel**
-   （`ordered:false, maxRetransmits:0`，本质是 UDP），彻底消除 TCP 队头阻塞造成的
-   "冻-跳"卡顿；信令复用现有 WebSocket，UDP 被封时 8-12 秒自动回落 WS，游戏不中断。
-3. **自适应插值 + 航位推算**：客户端按实测到达抖动动态调整回放延迟（100→500ms）；
-   快照断供时沿速度外推最多 1.5 秒继续渲染，网络突发不冻屏。
-4. **本地预测**：自己的车完全由本地渲染（按键即动，与服务器同曲线的变道动画），
-   仅在撞车/眩晕等硬冲突时对齐服务器——多人手感与单机一致。
-5. **无损输入协议**：左右键以**累积计数器**上报（每帧带总数，服务器消费增量），
-   数学上不可能因丢帧/丢包丢失按键。
-6. **断线重连**：比赛中掉线自动重连，服务器按 `playerId` 挂回原车位
-   （GameLift PlayerSession 保持有效），30 秒宽限期。
-7. **多区域就近放置**：fleet 同时部署 **us-east-1 / 东京 / 新加坡**；前端进大厅时
-   后台并行探测三区延迟（缓存 10 分钟），随匹配请求上报 `LatencyInMs`，
-   Queue 自动把每局放到对玩家整体延迟最优的区域。世界频道的 debug 消息
-   （青色）会显示每次匹配的延迟数据和最终放置区域。
+1. **Port choice**: game ports use **8443 + 2083** (HTTPS-family ports). In practice, user
+   networks widely block "gamey" ports like 7777/1935 (symptom: one side stuck forever on
+   connecting); GameLift forbids ports ≤1025, so real 443 is unavailable.
+2. **UDP transport (WebRTC DataChannel)**: state snapshots and input travel over an
+   **unreliable DataChannel** (`ordered:false, maxRetransmits:0` — effectively UDP),
+   eliminating the "freeze-jump" stutter caused by TCP head-of-line blocking. Signaling
+   reuses the existing WebSocket; when UDP is blocked, it falls back to WS after 8–12 s
+   without interrupting the game.
+3. **Adaptive interpolation + dead reckoning**: the client dynamically tunes replay delay
+   (100→500 ms) by measured jitter; when snapshots stop arriving it extrapolates along the
+   last velocity for up to 1.5 s, so bursts don't freeze the screen.
+4. **Local prediction**: your own car is rendered entirely locally (moves on keypress, with
+   the same lane-change animation curve as the server) and only realigns to the server on
+   hard conflicts like a crash or stun — multiplayer feels the same as single-player.
+5. **Lossless input protocol**: left/right are reported as **cumulative counters** (each frame
+   carries the total; the server consumes the delta), so a dropped frame/packet can never
+   mathematically lose a keypress.
+6. **Reconnect**: dropping mid-race auto-reconnects; the server reattaches you to your slot by
+   `playerId` (the GameLift PlayerSession stays valid), with a 30 s grace period.
+7. **Latency-based placement**: the fleet deploys to **us-east-1 / Tokyo / Singapore**
+   simultaneously; on entering the lobby the front end probes all regions in parallel in the
+   background (cached 10 min) and reports `LatencyInMs` with the match request, so the queue
+   places each game in the region with the best overall latency for its players. The world
+   chat's cyan debug messages show the latency data and final placement region for each match.
 
-## 前置条件
+## Prerequisites
 
-- AWS 账号 + 凭证，区域支持 GameLift（默认 us-east-1；多区域 fleet 还会用到东京/新加坡）
-- Node 20+、Go 1.26.2+、AWS CLI、CDK v2
-- 依次 `npm i`：`infra/`、`backend/`、`frontend/`
+- An AWS account + credentials, in a GameLift-supported region (default us-east-1; the
+  multi-region fleet also uses Tokyo/Singapore)
+- Node 20+, Go 1.26.2+, AWS CLI, CDK v2
+- Run `npm i` in each of: `infra/`, `backend/`, `frontend/`
 
-## Part 1 — 后端 + 前端（暂不涉及 GameLift）
+## Part 1 — Backend + Frontend (no GameLift yet)
 
 ```bash
 cd infra
-npx cdk bootstrap          # 账号/区域首次使用 CDK 时
+npx cdk bootstrap          # first CDK use in this account/region
 npx cdk deploy PixelRushBackendStack PixelRushFrontendStack
 ```
 
-把输出的 `WsNotifyUrl` 写进 `frontend/public/config.json`：
+Write the output `WsNotifyUrl` into `frontend/public/config.json`:
 
 ```json
 { "wsNotifyUrl": "wss://XXXX.execute-api.REGION.amazonaws.com/prod" }
 ```
 
-构建并发布站点，然后打开 `SiteUrl`：
+Build and publish the site, then open the `SiteUrl`:
 
 ```bash
 cd frontend && npm run build
 cd ../infra && npx cdk deploy PixelRushFrontendStack
 ```
 
-现在可以登录（新名字随机分到 8 个种子角色之一——不同等级/金币/车辆）、逛车库、
-买车；只有第一条赛道解锁。匹配功能还不可用。
+You can now log in (a new name is randomly assigned one of 8 seeded personas — differing
+car and coins), browse the garage, and buy cars; only the first track is unlocked.
+Matchmaking is not yet available.
 
-## Part 2 — 本机跑 GameLift Anywhere
+## Part 2 — Run GameLift Anywhere locally
 
-部署 GameLift 资源（仅 Anywhere fleet + FlexMatch，很快）：
+Deploy the GameLift resources (Anywhere fleet + FlexMatch only — fast):
 
 ```bash
 cd infra && npx cdk deploy PixelRushGameLiftStack
 ```
 
-把本机注册为 Anywhere compute 并启动游戏服务器：
+Register this machine as Anywhere compute and start the game server:
 
 ```bash
-./scripts/run-anywhere.sh    # 注册 compute、取 auth token、启动服务器
+./scripts/run-anywhere.sh    # register compute, get auth token, start the server
 ```
 
-开**两个浏览器标签页**、两个不同名字登录，选第一条赛道 → 2P。FlexMatch 撮合两张
-票据，WebSocket 推送游戏会话地址，两个标签页连到本机服务器开赛。赛果进排行榜，
-完赛解锁下一条赛道。
+Open **two browser tabs**, log in with two different names, pick the first track → 2P.
+FlexMatch pairs the two tickets, WebSocket pushes the game-session address, and both tabs
+connect to the server on this machine to race. Results go to the leaderboard; finishing
+unlocks the next track.
 
-## Part 3 — 托管 EC2 fleet（多区域）
+## Part 3 — Managed EC2 fleet (multi-region)
 
-构建 Linux 服务器并部署 fleet（三个区域全部激活约 15-20 分钟）。两个阶段：
+Build the Linux server and deploy the fleet (all regions active in ~15–20 min). Two stages:
 
 ```bash
 ./scripts/build-server-linux.sh
 
-# 阶段一 stage=ec2：托管 fleet + 直接放置（无匹配规则）——同赛道就共享一局
+# Stage 1 — stage=ec2: managed fleet + direct placement (no matchmaking rules): same track shares a session
 cd infra && npx cdk deploy PixelRushGameLiftStack PixelRushBackendStack -c stage=ec2
 
-# 阶段二 stage=ec2-match：在同一 fleet 前加上 FlexMatch 规则匹配
+# Stage 2 — stage=ec2-match: add FlexMatch rule-based matchmaking in front of the same fleet
 npx cdk deploy PixelRushGameLiftStack PixelRushBackendStack -c stage=ec2-match
 ```
 
-对战——浏览器通过 `wss://<DnsName>:8443` 连到 GameLift 托管实例（托管 fleet 有
-GameLift 签发的可信 TLS 证书，无需手动信任）。`ec2-match` 阶段会话经 FlexMatch
-放置在延迟最优的区域（看世界频道的青色 debug 消息确认）。控制台观察点：
-*GameLift → Fleets → PixelRushFleet → Game sessions / Events*。
+Race — the browser connects to the GameLift-managed instance via `wss://<DnsName>:8443`
+(the managed fleet has a trusted GameLift-issued TLS cert, no manual trust needed). In the
+`ec2-match` stage, FlexMatch places the session in the lowest-latency region (confirm via
+the cyan debug messages in world chat). Console observation points:
+*GameLift → Fleets → PixelRushFleet → Game sessions / Events*.
 
-`stage` 三档：不带（Anywhere）/ `ec2`（直接放置）/ `ec2-match`（FlexMatch）。
+Three `stage` values: unset (Anywhere) / `ec2` (direct placement) / `ec2-match` (FlexMatch).
 
-## Part 4 — 清理
+To add regions beyond the deploy region, pass `-c extraRegions=ap-northeast-1,ap-southeast-1`.
+
+## Part 4 — Cleanup
 
 ```bash
 cd infra
 npx cdk destroy PixelRushGameLiftStack PixelRushFrontendStack PixelRushBackendStack
 ```
 
-注意：多区域 fleet 每区域常驻 1 台 c5.large（约 $0.085/小时 × 3），不用时务必销毁。
+Note: a multi-region fleet keeps one c5.large per region running (~$0.085/hr each), so
+destroy it when you're done.
 
-## 设计说明与刻意简化
+## Design notes and deliberate simplifications
 
-- **无 JWT 鉴权** — 仅用 `playerId` 标识玩家 + 统一登录密码。生产模式参考 guidance
-  仓库的 CustomIdentityComponent。
-- **无 match backfill**（`backfillMode: MANUAL`）— 赛车局不接受中途加入，凑不齐由
-  服务器用 NPC 补位。
-- **一进程一局** — 每局结束进程退出，GameLift 拉起新进程。简单且崩溃隔离。
-- **FlexMatch 通知**走 SNS → Lambda → WebSocket 推送，保留 `GET /api/matchmaking/status`
-  轮询端点作为调试兜底。
-- **Quick Start 纯本地** — 与服务端同构的模拟在浏览器里跑，不占用 fleet 资源，
-  奖励通过限流的 `/api/race-reward` 端点发放。
+- **No JWT auth** — players are identified by `playerId` + a shared login password. For a
+  production pattern, see the CustomIdentityComponent in the guidance repo.
+- **No match backfill** (`backfillMode: MANUAL`) — races don't accept late joiners; the
+  server tops up an unfilled grid with NPCs.
+- **One process per game** — each game's process exits when the race ends and GameLift
+  launches a fresh one. Simple, with crash isolation.
+- **FlexMatch notifications** go SNS → Lambda → WebSocket push, with a
+  `GET /api/matchmaking/status` polling endpoint retained as a debugging fallback.
+- **Quick Start is purely local** — a sim isomorphic to the server runs in the browser,
+  consuming no fleet resources; rewards are granted via the rate-limited `/api/race-reward`
+  endpoint.
 
-## 故障排查
+## Troubleshooting
 
-| 症状 | 可能原因 |
+| Symptom | Likely cause |
 |---|---|
-| EC2 上浏览器连不上游戏服务器 | `ec2InboundPermissions` 缺游戏端口。务必用 HTTPS 类端口（8443/2083 TCP+UDP）——用户网络普遍封锁 7777 等端口，症状是一方卡 connecting。GameLift 禁止 ≤1025 端口 |
-| `wss://` 在 EC2 fleet 上失败 | fleet 需要 `certificateConfiguration: GENERATED`；客户端必须用 `DnsName` 而非 IP |
-| fleet 上 `SERVER_PROCESS_CRASHED` 循环 | 拉实例日志排查（`aws gamelift get-compute-access` + SSM）。注意：托管 fleet 上 `GetComputeCertificate()` 返回的是证书**目录**，需拼接 `certificate.pem` |
-| 匹配一直转圈 | 后端 Lambda 的 `MATCHMAKING_CONFIG_PREFIX` 指向了错误的配置（Anywhere vs Ec2） |
-| Anywhere 服务器 60 秒后自动退出 | 等待超时无人加入游戏会话——设计如此 |
-| `run-anywhere.sh` 约 15 分钟后报鉴权错误 | compute auth token 过期，重跑脚本即可 |
-| 直接调 `execute-api` 返回 403 | 预期行为——需带 `x-origin-verify` 头（多 Arena 直连模式由前端自动携带） |
-| 一方玩家画面卡顿"冻-跳" | 看 F12 控制台 `[net]` 日志：UDP 被封时走 WS 回落 + 自适应平滑；跨洋对局确认会话放置在了亚太区域 |
+| Browser can't reach the game server on EC2 | `ec2InboundPermissions` is missing the game ports. Use HTTPS-family ports (8443/2083 TCP+UDP) — user networks widely block ports like 7777; the symptom is one side stuck on connecting. GameLift forbids ports ≤1025 |
+| `wss://` fails on the EC2 fleet | The fleet needs `certificateConfiguration: GENERATED`; the client must use `DnsName`, not an IP |
+| `SERVER_PROCESS_CRASHED` loop on the fleet | Pull instance logs to debug (`aws gamelift get-compute-access` + SSM). Note: on a managed fleet, `GetComputeCertificate()` returns the certificate **directory** — append `certificate.pem` |
+| Matchmaking spins forever | The backend Lambda's `MATCHMAKING_CONFIG_PREFIX` points at the wrong config (Anywhere vs Ec2) |
+| Anywhere server exits after ~60 s | Wait timeout with no one joining the game session — by design |
+| `run-anywhere.sh` throws an auth error after ~15 min | The compute auth token expired; just re-run the script |
+| Calling `execute-api` directly returns 403 | Expected — it needs the `x-origin-verify` header (the front end adds it automatically in multi-arena direct mode) |
+| One player's view stutters ("freeze-jump") | Check the F12 console `[net]` logs: WS fallback + adaptive smoothing kick in when UDP is blocked; for cross-ocean games, confirm the session was placed in the Asia-Pacific region |
